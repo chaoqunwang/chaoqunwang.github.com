@@ -1,2 +1,24 @@
 // This File is imported last, and will override other styles in the cascade
 // Add styles here to make changes without digging in too much
+.myright 
+{ 
+    background: #C3D9FF; 
+    height:120px; 
+    border:1px solid #BBBBBB; 
+}
+
+.myright a:link 
+{ 
+    color: #0057b6; 
+    text-decoration: none; 
+} 
+.myright a:visited 
+{ 
+    color: #0057b6; 
+    text-decoration: none; 
+} 
+.myright a:active,a:hover 
+{ 
+    color: #0057b6; 
+    text-decoration: underline; 
+}
