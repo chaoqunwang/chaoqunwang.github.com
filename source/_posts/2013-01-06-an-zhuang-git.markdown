@@ -3,7 +3,7 @@ layout: post
 title: "安装git, 建立Octopress博客"
 date: 2013-01-06 22:34:24 -0800
 comments: true
-categories: 
+categories: octopress
 keywords: 
 description: 
 ---
