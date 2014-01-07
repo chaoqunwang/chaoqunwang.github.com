@@ -137,5 +137,12 @@ Octopress写作
 ```  
 cd octopress  
 rake new_post["new blog"]  
+```  
+another pc
+----  
+```  
+git clone -b source git@github.com:username/username.github.com.git octopress  
+cd octopress  
+git clone git@github.com:username/username.github.com.git _deploy  
 ```
 
