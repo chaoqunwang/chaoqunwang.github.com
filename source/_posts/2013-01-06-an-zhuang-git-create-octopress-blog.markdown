@@ -148,4 +148,49 @@ git clone -b source git@github.com:username/username.github.com.git octopress
 cd octopress  
 git clone git@github.com:username/username.github.com.git _deploy  
 ```
+增加category_list插件
+----
+保存以下代码到plugins/category_list_tag.rb：
+```
+module Jekyll
+  class CategoryListTag < Liquid::Tag
+    def render(context)
+      html = ""
+      categories = context.registers[:site].categories.keys
+      categories.sort.each do |category|
+        posts_in_category = context.registers[:site].categories[category].size
+        category_dir = context.registers[:site].config['category_dir']
+        category_url = File.join(category_dir, category.gsub(/_|\P{Word}/, '-').gsub(/-{2,}/, '-').downcase)
+        html << "<li class='category'><a href='/#{category_url}/'>#{category} (#{posts_in_category})</a></li>\n"
+      end
+      html
+    end
+  end
+end
 
+Liquid::Template.register_tag('category_list', Jekyll::CategoryListTag)
+```
+
+将category加入到侧边导航栏，需要增加一个aside
+复制以下代码到source/_includes/asides/category_list.html。
+```
+<section>
+  <h1>文章分类</h1>
+  <ul id="categories">
+    {% category_list %}
+  </ul>
+</section>
+```
+配置侧边栏需要修改_config.yml文件，修改其default_asides项：
+default_asides: [..., asides/category_list.html, ...]
+
+中文分类支持
+----
+侧边栏添加了文章分类后，英文分类没有问题，点击打开是分类下的文章列表；但中文分类，如云计算、设计模式之类就不行了，网上有各种解决办法，复杂了点；而且我发现新建日志的文件名如果是中文则会转成拼音，文章分类也是，你可以看下public/blog/categories下的文件名；所以如果能把边栏的链接地址改成拼音就行了，rakefile里有```rake new_post```代码；查看分析发现和```plugins/category_list_tag.rb```的处理类似，  
+```category.gsub(/_|\P{Word}/, '-').gsub(/-{2,}/, '-').downcase```是转换为单词‘-’分隔并且小写，rakefile里是```  mkdir_p  
+"#{source_dir}/#{posts_dir}"  
+filename = "#{source_dir}/#{posts_dir}/#{Time.now.strftime('%Y-%m-%d')}-#{title.to_url}.#{new_post_ext}"```  
+  **注意:**title多了```.to_url```，原来如此，将```category_list_tag.rb```里改成  
+  ```category.gsub(/_|\P{Word}/, '-').gsub(/-{2,}/, '-').downcase.to_url```，
+然后rake generate  rake preview  
+done！
