@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "[转]程序人生:有挑战性的JAVA程序员面试32问"
+title: "[转]有挑战性的JAVA程序员面试32问"
 date: 2008-03-02 18:01:02 -0800
 comments: true
 categories: java
