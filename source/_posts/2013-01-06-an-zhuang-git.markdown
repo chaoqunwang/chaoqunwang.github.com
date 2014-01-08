@@ -7,7 +7,7 @@ categories: octopress
 keywords: 
 description: 
 ---
-*本文是在参考若干网络日志（谢过~）,配置个人博客后整理而成*
+本文参考了若干网络日志（谢过~）, 配置个人博客后整理而成  
 安装git  
 ----
 ```sh  
