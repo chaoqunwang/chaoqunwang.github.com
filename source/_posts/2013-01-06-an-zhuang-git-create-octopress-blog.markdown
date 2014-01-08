@@ -131,6 +131,9 @@ var duoshuoQuery = {short_name:"username"};
 	</script>
 <!-- Duoshuo Comment END -->
 ```
+将AddThis更换为JiaThis
+----
+打开source/_includes/post/sharing.html，注释掉```<div class="share">...</div>```中的AddThis相关语句,然后在```</div>```前加入从JiaThis获得的代码。
 
 Octopress写作
 ----  
