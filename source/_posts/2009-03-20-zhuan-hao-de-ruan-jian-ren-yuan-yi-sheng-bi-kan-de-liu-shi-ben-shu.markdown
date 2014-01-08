@@ -3,7 +3,7 @@ layout: post
 title: "[转]好的软件人员一生必看的六十本书"
 date: 2009-03-20 19:51:09 -0800
 comments: true
-categories: 
+categories: 读书
 keywords: 
 description: 
 ---
