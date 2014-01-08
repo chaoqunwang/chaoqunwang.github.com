@@ -8,4 +8,12 @@ if (location.href == "http://www.colalife.com/"
 	|| location.href == "http://wangchaoqun.cn/") {
 	window.location.replace("http://www.wangchaoqun.com/");
 }
+function addBlankTargetForLinks () {
+  $('a[href^="http"]').each(function(){
+      $(this).attr('target', '_blank');
+  });
+}
+$(document).bind('DOMNodeInserted', function(event) {
+  addBlankTargetForLinks();
+});
 </script>

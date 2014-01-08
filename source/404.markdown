@@ -1,0 +1,11 @@
+---
+layout: page
+title: "404 Error"
+date: 2013-4-21 02:35
+comments: false
+sharing: false
+footer: false
+---
+你访问的页面找不到了……  
+请核对地址，或浏览其他页面
+
