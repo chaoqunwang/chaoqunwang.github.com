@@ -5,6 +5,7 @@ date: 2009-03-20 19:51:09 -0800
 comments: true
 categories: 读书
 keywords: 
+tags: books
 description: 
 ---
 好的软件人员一生必看的六十本书，好歹看过一些（**加粗的**）：

@@ -5,6 +5,7 @@ date: 2013-01-06 22:34:24 -0800
 comments: true
 categories: octopress
 keywords: 
+tags: github git octopress
 description: 
 ---
 本文参考了若干网络日志（谢过~）, 配置个人博客后整理而成  

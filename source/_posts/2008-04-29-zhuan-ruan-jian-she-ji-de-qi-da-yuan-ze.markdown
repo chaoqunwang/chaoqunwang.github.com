@@ -5,6 +5,7 @@ date: 2008-04-29 19:18:52 -0800
 comments: true
 categories: 设计模式
 keywords: 
+tags: 设计模式
 description: 
 ---
 设计模式遵循的一般原则：

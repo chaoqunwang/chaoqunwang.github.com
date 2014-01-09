@@ -5,6 +5,7 @@ date: 2013-01-01 00:32:42 -0800
 comments: true
 categories: java code
 keywords: 
+tags: excel poi
 description: 
 ---
 前端使用jquery easyui，datagrid添加导出按钮（另外的js逻辑）即可将当前页或所有页数据(支持查询条件的导出)导出到excel，支持office excel 2003和2007+;  

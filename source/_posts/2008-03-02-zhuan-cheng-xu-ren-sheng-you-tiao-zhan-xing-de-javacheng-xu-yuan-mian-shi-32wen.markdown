@@ -5,6 +5,7 @@ date: 2008-03-02 18:01:02 -0800
 comments: true
 categories: java
 keywords: 
+tags: 面试题
 description: 
 ---
 <a href="http://tech.ccidnet.com/art/3539/20080228/1374267_1.html" target="_blank">来自赛迪网</a>  

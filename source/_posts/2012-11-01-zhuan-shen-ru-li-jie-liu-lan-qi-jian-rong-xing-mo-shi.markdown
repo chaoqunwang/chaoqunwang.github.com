@@ -5,6 +5,7 @@ date: 2012-11-01 09:27:53 -0800
 comments: true
 categories: web
 keywords: 
+tags: browser
 description: 
 ---
 web开发人员遇到浏览器兼容简直就是噩梦，尤其各种ie内核的浏览器，还有搜狗、360等；这篇文章讲得比较详细，转了<a href="http://www.ituring.com.cn/article/15231" target="_blank">来自图灵社区</a>  

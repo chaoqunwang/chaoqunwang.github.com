@@ -5,6 +5,7 @@ date: 2012-09-27 15:54:33 -0800
 comments: true
 categories: java hibernate
 keywords: 
+tags: hibernate sessionfactory spring-test
 description: 
 ---
 大家知道通过hibernate cfg或和spring集成的配置里，可用packagesToScan或mapping*之类声明实体类；但有需求可能要在某个项目中编码式加载实体类（例如某个不常用的或特定用户的实体类，并未事先配置），然后进行增删改查操作。下面代码配合spring test framework做了测试（注：hibernate升级到了4.3.final，与4.2有不同，spring3或4测试通过）：<!--more-->

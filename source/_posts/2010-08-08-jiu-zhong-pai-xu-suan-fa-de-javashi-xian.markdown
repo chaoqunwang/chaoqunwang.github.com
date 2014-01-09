@@ -5,6 +5,7 @@ date: 2010-08-08 21:09:09 -0800
 comments: true
 categories: java 算法 code
 keywords: 
+tags: 算法
 description: 
 ---
 使用枚举类型存入各算法和接口实现，main方法打印排序后的数组，也可以加入nanotime、currentTimeMillis测试效率，但可能数组太小不明显
