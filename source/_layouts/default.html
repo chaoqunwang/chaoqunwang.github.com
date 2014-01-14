@@ -1,6 +1,8 @@
 {% capture root_url %}{{ site.root | strip_slash }}{% endcapture %}
 {% include head.html %}
 <body {% if page.body_id %} id="{{ page.body_id }}" {% endif %} {% if page.sidebar == false %} class="no-sidebar" {% endif %} {% if page.sidebar == 'collapse' or site.sidebar == 'collapse' %} class="collapse-sidebar sidebar-footer" {% endif %}>
+
+<div id="ujian-backtop" style="left: auto; right: 0px; position: fixed; top: auto; bottom: 101px; z-index: 2147483643; overflow: hidden; display: block; opacity: 1;"><a onmouseover="this.style.backgroundPosition='-97px -1px';" onmouseout="this.style.backgroundPosition='-65px -1px';" href="#" title="回到顶部" onclick="UJIAN.backTop();return false;" style="background-image: url(/images/ujian.png); background-attachment: scroll; background-color: transparent; display: block; float: right; outline: none 0px; text-indent: -9999em; width: 30px; height: 30px; background-position: -65px -1px; background-repeat: no-repeat no-repeat;">回到顶部</a></div>
   <header role="banner">{% include header.html %}</header>
   <nav role="navigation">{% include navigation.html %}</nav>
   <div id="main">
