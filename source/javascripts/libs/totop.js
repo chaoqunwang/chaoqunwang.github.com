@@ -24,9 +24,9 @@ var scrolltotop={
 
     setting: {startline:100, scrollto: 0, scrollduration:1000, fadeduration:[500, 100]},
 
-    controlHTML: '<img src="/images/arrow36.png" />', //HTML for control, which is auto wrapped in DIV w/ ID="topcontrol"
+    controlHTML: '<img src="/images/arrow34.png"/>', //HTML for control, which is auto wrapped in DIV w/ ID="topcontrol"
 
-    controlattrs: {offsetx:5, offsety:5}, //offset of control relative to right/ bottom of window corner
+    controlattrs: {offsetx:40, offsety:110}, //offset of control relative to right/ bottom of window corner
 
     anchorkeyword: '#top', //Enter href value of HTML anchors on the page that should also act as "Scroll Up" links
 
@@ -103,7 +103,7 @@ var scrolltotop={
             mainobj.cssfixedsupport=!iebrws || iebrws && document.compatMode=="CSS1Compat" && window.XMLHttpRequest //not IE or IE7+ browsers in standards mode
             mainobj.$body=(window.opera)? (document.compatMode=="CSS1Compat"? $('html') : $('body')) : $('html,body')
             mainobj.$control=$('<div id="topcontrol">'+mainobj.controlHTML+'</div>')
-                .css({position:mainobj.cssfixedsupport? 'fixed' : 'absolute', bottom:mainobj.controlattrs.offsety, right:mainobj.controlattrs.offsetx, opacity:0, cursor:'pointer'})
+                .css({position:mainobj.cssfixedsupport? 'fixed' : 'absolute', bottom:mainobj.controlattrs.offsety, right:mainobj.controlattrs.offsetx, opacity:0, cursor:'pointer', height:'36px', width:'36px'})
                 .attr({title:'Scroll to Top'})
                 .click(function(){mainobj.scrollup(); return false})
                 .appendTo('body')
