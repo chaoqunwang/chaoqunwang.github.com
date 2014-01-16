@@ -5,7 +5,7 @@ date: 2009-7-8 22:40:21 -0800
 comments: true
 categories: 生活
 keywords: 人生
-tags: 人生
+tags: 随笔
 description: 人生的意义
 ---
 我已经开始喜欢这种感觉了，

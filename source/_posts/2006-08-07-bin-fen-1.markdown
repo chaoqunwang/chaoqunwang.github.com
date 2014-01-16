@@ -4,9 +4,9 @@ title: "缤纷（一）"
 date: 2006-08-07 21:25:45 -0800
 comments: true
 categories: 生活
-keywords: 回忆
-tags: 回忆
-description: 我的大学
+keywords: 回忆 我的大学 生活
+tags: 随笔
+description: 回忆 我的大学 生活
 ---
 “记忆是阵阵花香，一起走过谁都不能忘……你比我勇敢……”­
 

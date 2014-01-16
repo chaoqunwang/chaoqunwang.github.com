@@ -4,9 +4,9 @@ title: "缤纷（三）"
 date: 2008-07-01 15:49:30 -0800
 comments: true
 categories: 生活
-keywords: 回忆
-tags: 回忆
-description: 我的大学
+keywords: 回忆 我的大学 生活
+tags: 随笔
+description: 回忆 我的大学 生活
 ---
 昨日的一切历历在目，现实却是弹指一挥间四年大学生活已然结束。现在想写些什么，还是不知所云了。期间有缤纷（一），缤纷（二），就作为缤纷三部曲，这个应是缤纷三部曲的完结篇了。­
 

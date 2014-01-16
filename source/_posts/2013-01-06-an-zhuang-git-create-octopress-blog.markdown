@@ -4,9 +4,9 @@ title: "安装git, 建立Octopress博客"
 date: 2013-01-06 22:34:24 -0800
 comments: true
 categories: octopress
-keywords: 
+keywords: github git octopress
 tags: github git octopress
-description: 
+description: github git octopress
 ---
 本文参考了若干网络日志（谢过~）, 配置个人博客后整理而成  
 安装git  
