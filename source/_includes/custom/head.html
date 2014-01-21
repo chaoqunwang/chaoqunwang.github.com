@@ -2,6 +2,19 @@
 <link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
 <link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
 <script language="javascript" type="text/javascript">
+var ref=location.href;
+var wangchaoqun_com="wangchaoqun.com";
+var wangchaoqun_cn="wangchaoqun.cn";
+var colalife_com="colalife.com";
+
+if(ref.indexOf(colalife_com)!=-1){
+  ref=ref.replace(colalife_com, wangchaoqun_com);
+  window.location.replace(ref);
+} else if(ref.indexOf(wangchaoqun_cn)!=-1){
+  ref=ref.replace(wangchaoqun_cn, wangchaoqun_com);
+  window.location.replace(ref);
+}
+
 function addBlankTargetForLinks () {
   $('a[href^="http"]').each(function(){
       $(this).attr('target', '_blank');
@@ -11,3 +24,6 @@ $(document).bind('DOMNodeInserted', function(event) {
   addBlankTargetForLinks();
 });
 </script>
+<meta name="baidu-site-verification" content="QjNbgI1euC" />
+<meta name="baidu-site-verification" content="gmxVuuxMZ2" />
+<meta name="baidu-site-verification" content="MNRe0SLMZ6" />
