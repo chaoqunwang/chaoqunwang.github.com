@@ -3,10 +3,10 @@ layout: post
 title: "Cygwin & Wine & Ruby 记录"
 date: 2013-01-16 16:03:36 +0800
 comments: true
-categories: octopress
-keywords: octopress Cygwin Wine Ruby
-tags: octopress cygwin wine ruby
-description: octopress cygwin wine ruby
+categories: linux
+keywords: linux octopress Cygwin Wine Ruby
+tags: linux octopress cygwin wine ruby
+description: linux octopress cygwin wine ruby
 ---
 cygwin是一个在windows平台上运行的unix模拟环境, wine则可以安装在Linux，再对应到Windows相应的函数来调用DLL以运行Windows程序。这两个就是利器，windows下不想用虚拟机（占用资源还挺多）或双系统，就可以用用cygwin；服务器上想搞点exe的东西就安装个wine。至于ruby，是因为octopress要用，开个虚拟机写博客很不爽，windows下折腾安装配置，却中文编码没解决，还是cygwin搞定。<!--more-->
 cygwin的安装

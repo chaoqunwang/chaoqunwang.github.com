@@ -3,15 +3,15 @@ layout: post
 title: "安装git, 建立Octopress博客"
 date: 2013-01-06 22:34:24 -0800
 comments: true
-categories: octopress
-keywords: github git octopress
-tags: github git octopress
-description: github git octopress
+categories: 其他
+keywords: github git octopress ruby blog 博客 中文分类
+tags: github git octopress ruby
+description: github git octopress ruby blog 博客 中文分类
 ---
 本文参考了若干网络日志（谢过~）, 配置个人博客后整理而成  
 安装git  
 ----
-```sh  
+```  
 yum -y install git
 git --version
 ```  
@@ -27,7 +27,7 @@ ssh -v git@github.com
 安装ruby  
 ----
 ```  
-wget ftp://ftp.ruby-lang.org//pub/ruby/2.1/ruby-2.1.0.tar.gz  
+wget ftp://ftp.ruby-lang.org/pub/ruby/2.1/ruby-2.1.0.tar.gz  
 tar -zxvf ruby-2.1.0.tar.gz
 cd ruby-2.1.0
 ./configure --prefix=/usr/local/ruby
@@ -106,7 +106,7 @@ duoshuo_show_comment_count: true
 ```
 
 在source/_layouts/post.html尾部添加如下代码：  
-```sh  
+```  
 {% if site.duoshuo_show_comment_count==true and page.comments==true %}
 <section id="comment">
 <h1>发表评论</h1>
