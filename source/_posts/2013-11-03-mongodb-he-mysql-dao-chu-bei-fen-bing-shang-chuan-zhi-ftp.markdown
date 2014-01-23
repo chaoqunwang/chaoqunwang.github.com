@@ -171,3 +171,9 @@ bye
 !
 echo "============== mysql upload ends at $NEW_TIMESTAMP =============="
 ```
+4. 添加计划任务
+```
+crontab -e
+#every day at 00m
+00 * * * * /bin/bash /usr/local/mongo/cmd/mongo_backup.sh
+```
