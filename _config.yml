@@ -11,7 +11,7 @@ original_url_pre: 原文地址：
 simple_search: http://google.com/search
 description: 超群的博客, 生活记录，技术博客, wang chaoqun, colalife.com, wangchaoqun.com, wangchaoqun.cn
 keywords: 超群的博客, 生活记录，技术博客，关注开源技术，大数据，云计算，移动互联网以及java, web, mobile, android, linux, tomcat, httpd, browser, internet, media, sql, news
-ji_shu_categories: [dai-ma, du-shu, zhi-ye, sheng-huo]
+
 # Default date format is "ordinal" (resulting in "July 22nd 2007")
 # You can customize the format as defined in
 # http://www.ruby-doc.org/core-1.9.2/Time.html#method-i-strftime

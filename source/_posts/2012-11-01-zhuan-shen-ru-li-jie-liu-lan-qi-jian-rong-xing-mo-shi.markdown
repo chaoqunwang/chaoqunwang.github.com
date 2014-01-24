@@ -3,7 +3,7 @@ layout: post
 title: "[转]深入理解浏览器兼容性模式"
 date: 2012-11-01 09:27:53 -0800
 comments: true
-categories: web
+categories: tech web
 keywords: 
 tags: browser
 description: 

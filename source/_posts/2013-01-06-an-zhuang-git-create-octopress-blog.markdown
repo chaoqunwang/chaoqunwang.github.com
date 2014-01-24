@@ -3,7 +3,7 @@ layout: post
 title: "安装git, 建立Octopress博客"
 date: 2013-01-06 22:34:24 -0800
 comments: true
-categories: 其他
+categories: tech 其他
 keywords: github git octopress ruby blog 博客 中文分类
 tags: github git octopress ruby
 description: github git octopress ruby blog 博客 中文分类

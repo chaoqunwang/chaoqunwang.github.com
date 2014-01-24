@@ -3,7 +3,7 @@ layout: post
 title: "mongodb, mysql导出备份至ftp"
 date: 2013-11-03 17:10:32 +0800
 comments: true
-categories: linux mongodb mysql vsftp
+categories: tech linux mongodb mysql ftp
 keywords: linux mongodb mysql vsftp 导出 备份 上传
 tags: linux mongodb mysql vsftp
 description: linux mongodb mysql vsftp 导出 备份 上传

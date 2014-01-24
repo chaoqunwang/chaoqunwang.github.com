@@ -3,7 +3,7 @@ layout: post
 title: "[转]Tomcat 生产服务器性能优化"
 date: 2013-07-24 18:08:06 -0800
 comments: true
-categories: tomcat
+categories: tech tomcat
 keywords: 
 tags: tomcat jvm
 description: 

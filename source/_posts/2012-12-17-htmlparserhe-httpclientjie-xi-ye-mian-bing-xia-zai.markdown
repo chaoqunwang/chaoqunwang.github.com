@@ -3,7 +3,7 @@ layout: post
 title: "htmlparser和httpclient解析页面并下载"
 date: 2012-12-17 11:05:41 -0800
 comments: true
-categories: java 代码
+categories: tech java 代码
 keywords: htmlparser jsoup httpclient
 tags: htmlparser jsoup httpclient
 description: 

@@ -3,7 +3,7 @@ layout: post
 title: "[转]Code Kata：编码套路"
 date: 2013-12-02 18:39:05 -0800
 comments: true
-categories: 职业
+categories: tech 职业
 keywords: 编程 程序员修炼之道
 tags: 编程 程序员修炼之道
 description: 

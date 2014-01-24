@@ -3,7 +3,7 @@ layout: post
 title: "[转]软件设计的七大原则"
 date: 2008-04-29 19:18:52 -0800
 comments: true
-categories: 设计模式
+categories: tech 设计模式
 keywords: 软件设计 设计模式 原则
 tags: 设计模式
 description: 软件设计 设计模式 原则

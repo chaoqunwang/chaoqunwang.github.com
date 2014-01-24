@@ -3,7 +3,7 @@ layout: post
 title: "本地搭建SVN服务器及配置"
 date: 2008-10-22 20:50:35 -0800
 comments: true
-categories: web
+categories: tech web
 keywords: 
 tags: svn
 description: 

@@ -3,7 +3,7 @@ layout: post
 title: "[转]有挑战性的JAVA程序员面试32问"
 date: 2008-03-02 18:01:02 -0800
 comments: true
-categories: java
+categories: tech java
 keywords: 
 tags: 面试题
 description: 

@@ -3,7 +3,7 @@ layout: post
 title: "SQL Server 2005的安装和JDBC连接方法"
 date: 2008-08-11 13:29:34 +0800
 comments: true
-categories: java
+categories: tech java
 keywords: SQLServer 2005 数据库 JDBC连接 中文乱码
 tags: 数据库
 description: SQLServer 2005 数据库 JDBC连接 中文乱码

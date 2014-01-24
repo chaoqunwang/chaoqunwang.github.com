@@ -3,7 +3,7 @@ layout: post
 title: "测试Hibernate动态添加实体类"
 date: 2012-09-27 15:54:33 -0800
 comments: true
-categories: java hibernate
+categories: tech java hibernate
 keywords: 
 tags: hibernate sessionfactory spring-test
 description: 

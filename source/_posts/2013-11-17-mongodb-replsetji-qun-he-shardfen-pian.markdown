@@ -3,7 +3,7 @@ layout: post
 title: "MongoDB replSet集群和shard分片"
 date: 2013-11-17 16:11:35 +0800
 comments: true
-categories: mongodb
+categories: tech mongodb
 keywords: mongodb 集群 replSet 分片 shard
 tags: mongodb 集群 分片
 description: mongodb 集群 replSet 分片 shard

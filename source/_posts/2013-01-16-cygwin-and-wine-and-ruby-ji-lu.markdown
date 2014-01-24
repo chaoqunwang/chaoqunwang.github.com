@@ -3,7 +3,7 @@ layout: post
 title: "Cygwin & Wine & Ruby 记录"
 date: 2013-01-16 16:03:36 +0800
 comments: true
-categories: linux
+categories: tech linux
 keywords: linux octopress Cygwin Wine Ruby
 tags: linux octopress cygwin wine ruby
 description: linux octopress cygwin wine ruby
