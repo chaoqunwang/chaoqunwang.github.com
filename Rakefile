@@ -100,7 +100,7 @@ task :new_post, :title do |t, args|
   end
   raise "### You haven't set anything up yet. First run `rake install` to set up an Octopress theme." unless File.directory?(source_dir)
   mkdir_p "#{source_dir}/#{posts_dir}"
-  filename = "#{source_dir}/#{posts_dir}/#{Time.now.strftime('%Y-%m-%d')}-#{title.to_url}.#{new_post_ext}"
+  filename = "#{source_dir}/#{posts_dir}/#{Time.now.localtime.strftime('%Y-%m-%d')}-#{title.to_url}.#{new_post_ext}"
   if File.exist?(filename)
     abort("rake aborted!") if ask("#{filename} already exists. Do you want to overwrite?", ['y', 'n']) == 'n'
   end
@@ -110,7 +110,7 @@ task :new_post, :title do |t, args|
     post.puts "layout: post"
     #post.puts "title: \"#{title.gsub(/&/,'&amp;')}\""
     post.puts "title: \"#{title}\""
-    post.puts "date: #{Time.now.strftime('%Y-%m-%d %H:%M:%S %z')}"
+    post.puts "date: #{Time.now.localtime.strftime('%Y-%m-%d %H:%M:%S %z')}"
     post.puts "comments: true"
     post.puts "categories: "
     post.puts "keywords: "
@@ -118,6 +118,7 @@ task :new_post, :title do |t, args|
     post.puts "description: "
     post.puts "---"
   end
+
 end
 
 # usage rake new_page[my-new-page] or rake new_page[my-new-page.html] or rake new_page (defaults to "new-page.markdown")
@@ -148,7 +149,7 @@ task :new_page, :filename do |t, args|
       page.puts "---"
       page.puts "layout: page"
       page.puts "title: \"#{title}\""
-      page.puts "date: #{Time.now.strftime('%Y-%m-%d %H:%M')}"
+      page.puts "date: #{Time.now.localtime.strftime('%Y-%m-%d %H:%M')}"
       page.puts "comments: true"
       page.puts "keywords: "
       page.puts "tags: "
@@ -157,6 +158,7 @@ task :new_page, :filename do |t, args|
       page.puts "footer: true"
       page.puts "---"
     end
+
   else
     puts "Syntax error: #{args.filename} contains unsupported characters"
   end
@@ -265,8 +267,8 @@ multitask :push do
   cp_r "#{public_dir}/.", deploy_dir
   cd "#{deploy_dir}" do
     system "git add -A"
-    puts "\n## Committing: Site updated at #{Time.now.utc}"
-    message = "Site updated at #{Time.now.utc}"
+    puts "\n## Committing: Site updated at #{Time.now.localtime.utc}"
+    message = "Site updated at #{Time.now.localtime.utc}"
     system "git commit -m \"#{message}\""
     puts "\n## Pushing generated #{deploy_dir} website"
     system "git push origin #{deploy_branch}"

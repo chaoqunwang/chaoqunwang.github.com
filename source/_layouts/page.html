@@ -1,5 +1,6 @@
 ---
 layout: default
+comments: true
 ---
 
 <div>
@@ -27,9 +28,11 @@ layout: default
   {% endunless %}
 </article>
 <!-- duoshuo -->
+{% if page.comments %}
 <section id=”comment”>
 {% include post/duoshuo.html %}
 </section>
+{% endif %}
 </div>
 {% unless page.sidebar == false %}
 <aside class="sidebar">

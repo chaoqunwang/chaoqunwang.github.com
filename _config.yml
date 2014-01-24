@@ -6,17 +6,19 @@ url: http://wangchaoqun.com
 title:      超群的博客
 subtitle: { 博观约取，厚积薄发 }
 author: wang chaoqun
-category_title_prefix: 分类：
+category_title_prefix: 文章分类：
+original_url_pre: 原文地址：
 simple_search: http://google.com/search
 description: 超群的博客, 生活记录，技术博客, wang chaoqun, colalife.com, wangchaoqun.com, wangchaoqun.cn
 keywords: 超群的博客, 生活记录，技术博客，关注开源技术，大数据，云计算，移动互联网以及java, web, mobile, android, linux, tomcat, httpd, browser, internet, media, sql, news
-
+ji_shu_categories: [dai-ma, du-shu, zhi-ye, sheng-huo]
 # Default date format is "ordinal" (resulting in "July 22nd 2007")
 # You can customize the format as defined in
 # http://www.ruby-doc.org/core-1.9.2/Time.html#method-i-strftime
 # Additionally, %o will give you the ordinal representation of the day
-date_format: "ordinal"
-
+#date_format: "ordinal"
+#date_format: "%F %a"  		#2012-01-01    
+date_format: "%Y年%m月%d日"	#2012年1月1日
 # RSS / Email (optional) subscription links (change if using something like Feedburner)
 subscribe_rss: /atom.xml
 subscribe_email:
@@ -29,7 +31,8 @@ email:
 
 # If publishing to a subdirectory as in http://site.com/project set 'root: /project'
 root: /
-permalink: /blog/:year/:month/:day/:title/
+# permalink: /blog/:year/:month/:day/:title/
+permalink: /blog/:year/:month/:title.html/
 source: source
 destination: public
 plugins: plugins

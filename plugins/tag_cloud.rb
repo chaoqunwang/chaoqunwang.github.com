@@ -115,7 +115,7 @@ module Jekyll
         size = sprintf("%.#{@precision}f", size)
         slug = name.to_url
         @separator = "" if i == (weighted.size - 1)
-        html << "#{@tag_before}<a style=\"font-size: #{size}#{unit}\" href=\"/#{dir}/#{slug}/\">#{name}</a>#{@separator}#{@tag_after}\n"
+        html << "#{@tag_before}<a style=\"padding: 3px;font-size: #{size}#{unit}\" href=\"/#{dir}/#{slug}/\">#{name}</a>#{@separator}#{@tag_after}\n"
       end
 
       html

@@ -1,7 +1,8 @@
 ---
 layout: page
 title: "标签"
+comments: true
 ---
 <div id="tag-archives">
-  <ul class="tag-cloud">{% tag_cloud font-size: 90-210%, limit: 1000, style: para %}</ul>
+  <ul class="tag-cloud">{% tag_cloud font-size: 120-240%, limit: 500, style: para %}</ul>
 </div>
