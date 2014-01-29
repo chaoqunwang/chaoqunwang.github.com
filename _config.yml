@@ -1,7 +1,7 @@
 # ----------------------- #
 #      Main Configs       #
 # ----------------------- #
-
+mydomain: wangchaoqun.com
 url: http://wangchaoqun.com
 title:      超群的博客
 subtitle: { 博观约取，厚积薄发 }
