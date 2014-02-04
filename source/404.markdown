@@ -6,5 +6,5 @@ comments: false
 sharing: false
 footer: false
 ---
-###Sorry, 你访问的页面找不到了……请核对地址, 或浏览其他页面
+###Sorry, 你访问的页面找不到了……请核对地址, **5**秒后自动返回首页
 <img src="http://bcs.duapp.com/colalife2000/404.jpg">

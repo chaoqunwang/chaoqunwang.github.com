@@ -8,13 +8,17 @@
 $(document).ready(function(){
 	changeBg();
 	//window.setInterval("changeBg()", 30*1000);
-
+	
+	var error404=$("#currentUrl").attr("href");
+	if(error404.indexOf("/404.html")!=-1){
+		window.setTimeout("document.location='/';", 5*1000);
+	}
+	
 	$(document).bind('DOMNodeInserted', function(event) {
 	  addBlankTargetForLinks();
 	});
 
 /*
-	var ref=location.href;
 	var wangchaoqun_com="wangchaoqun.com";
 	var wangchaoqun_cn="wangchaoqun.cn";
 	var colalife_com="colalife.com";
