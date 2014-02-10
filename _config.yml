@@ -105,7 +105,7 @@ google_analytics_tracking_id:
 # Facebook Like
 facebook_like: false
 # Post License 
-post_license: true
+post_license: false
 
 # duoshuo comments
 duoshuo_short_name: colalife
