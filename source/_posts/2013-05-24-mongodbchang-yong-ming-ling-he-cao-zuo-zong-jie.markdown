@@ -9,29 +9,29 @@ tags: mongodb mapreduce
 description: mongodb mapreduce 常用命令 spring-data
 ---
 做个总结，涉及到mongodb的常用命令、java client查询、spring data mongodb的使用，group，map/reduce等
-####关闭服务
+###关闭服务
 ```
 use admin
 db.shutdownServer()
 ```
-####加锁
+###加锁
 ```
 use admin
 db.runCommand({"fsync":1,"lock":1})
 ```<!--more-->
-####解锁
+###解锁
 ```
 use admin
 db.$cmd.sys.unlock.findOne()
 db.currentOp()    
 {"inprog":[]}
 ```
-####导出和导入
+###导出和导入
 ```
 mongodump -h 192.168.0.100:27017 -d mydb -o B:\mongo\dump
 mongorestore -h 127.0.0.1:27017 --directoryperdb B:\mongo\dump
 ```
-####用户
+###用户
 ```
 use admin
 db.addUser('name','pwd')
@@ -39,22 +39,22 @@ db.system.users.find()
 db.auth('name','pwd')
 db.removeUser('name')
 ```
-####数据库
+###数据库
 ```
 db.copyDatabase('projectDB1', 'projectDB2')
 db.projectDB1.drop()
 db.dropDatabase()
 ```
-####增删改
+###增删改
 ```
 db.mycollection.inser,save,update...
 ```
-####索引
+###索引
 ```
 db.user.ensureIndex({firstname: 1, lastname: 1}, {unique: true});
 db.user.dropIndex('address.post_1')
 ```
-####查询
+###查询
 ```
 db.mycollection.find,findOne,distinct.sort({'createTime',-1}).skip(3).limit(10)
 db.user.insert({"name":"cq","age":28,"address":{"province":100,"city":101}})
@@ -73,7 +73,7 @@ db.user.find({creationTime:{$gt:1300000000000, $lte:1310000000000});
 db.reply.find({$where: "this.upCount+this.downCount<1"}); 
 db.reply.find("this.upCount+this.downCount<1");
 ```
-####返回和排除字段
+###返回和排除字段
 ```
 db.user.find({"name":"cq"}, {age:1, address:0}); 
 count
@@ -83,7 +83,7 @@ db.topic.find().skip(10).limit(5).count(); # 所有的记录数量
 ```
 db.topic.find().skip(10).limit(5).count(true);
 ```
-####dbref关联  
+###dbref关联  
 多查一  
 ```
 > db.reply.findOne({creator:"wy"}, {creator:1,topic:1})
@@ -125,7 +125,7 @@ DBRef("topic", ObjectId("52cf620a0b6307f6a0d44450"))
 > db.reply.find({"topic.$id":topic._id}).count()
 2
 ```
-####spring data mongodb
+###spring data mongodb
 ```
 Criteria cri = Criteria.where("topic.$id").is(new ObjectId("52d8f8950b6316a72bb31c7c"));
 Reply reply = mongoTemplate.findOne(Query.query(cri), Reply.class);
@@ -134,7 +134,7 @@ cri.andOperator(Criteria.where("passedtime").gt(fromTime), Criteria.where("passe
 // 错误的：Criteria.where("passedtime").gt(fromTime).and("passedtime").lt(toTime)
 ```
 
-####java client 可以这样：  
+###java client 可以这样：  
 ```
 String total = "this.upCount+this.downCount < " + minCount;
 BasicDBObject query = new BasicDBObject("$where", total);
@@ -159,7 +159,7 @@ for (int i = 0; i < size; i++) {
 }
 ```
 
-####group
+###group
 topic : reply = one to many，按topic(或发布者)分组统计回复数
 shell:
 ```
@@ -184,7 +184,7 @@ DBCollection collection = mongoTemplate.getCollection("reply");
 collection.group(...);
 ```
 
-####map/reduce
+###map/reduce
 
 场景：展示发帖或回帖的时间趋势图，或者说按整点显示此小时内的发帖数和回帖数，展示成折线图
 创建时间保存的是number long，即date.getTime()的值，key要转成小时，使用new Date(y,m,d,h,0,0,0)  
