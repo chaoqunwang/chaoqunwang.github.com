@@ -125,7 +125,7 @@ DBRef("topic", ObjectId("52cf620a0b6307f6a0d44450"))
 > db.reply.find({"topic.$id":topic._id}).count()
 2
 ```
-###spring data mongodb
+####spring data mongodb
 ```
 Criteria cri = Criteria.where("topic.$id").is(new ObjectId("52d8f8950b6316a72bb31c7c"));
 Reply reply = mongoTemplate.findOne(Query.query(cri), Reply.class);
@@ -134,7 +134,7 @@ cri.andOperator(Criteria.where("passedtime").gt(fromTime), Criteria.where("passe
 // 错误的：Criteria.where("passedtime").gt(fromTime).and("passedtime").lt(toTime)
 ```
 
-###java client 可以这样：  
+####java client 可以这样：  
 ```
 String total = "this.upCount+this.downCount < " + minCount;
 BasicDBObject query = new BasicDBObject("$where", total);
