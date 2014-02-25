@@ -1,37 +1,36 @@
 ---
 layout: post
-title: "mongodb aggregation framework 学习"
-date: 2013-05-28 12:56:21 +0800
+title: "mongodb aggregation framework总结"
+date: 2013-05-18 12:56:21 +0800
 comments: true
 categories: tech mongodb
-keywords: mongodb map-reduce 常用命令 spring-data aggregation
-tags: mongodb mapreduce
-description: mongodb map-reduce 常用命令 spring-data aggregation
+keywords: mongodb map-reduce spring-data aggregation
+tags: mongodb aggregation
+description: mongodb map-reduce  spring-data aggregation
 ---
+2.2版本新特性，比group, map-reduce好，reference里有很多操作和[运算]可用  
+pipeline operators:  
+• $project (page 285)  
+• $match (page 281)  
+• $limit (page 280)  
+• $skip (page 287)  
+• $unwind (page 290)// 用于嵌套文档，可对数组拆解  
+• $group (page 278)  
+• $sort (page 287)  
+• $geoNear (page 276)    
+<!--more-->
 
-###aggregation framework  
-2.2版本新特性，比group, map-reduce好，reference里有很多操作和运算可用  
-pipeline operators:
-• $project (page 285)
-• $match (page 281)
-• $limit (page 280)
-• $skip (page 287)
-• $unwind (page 290)// 用于嵌套文档，可对数组拆解
-• $group (page 278)
-• $sort (page 287)
-• $geoNear (page 276)  
-
-和SQL的对应关系：
-WHERE $match (page 281)
-GROUP BY $group (page 278)
-HAVING $match (page 281)
-SELECT $project (page 285)
-ORDER BY $sort (page 287)
-LIMIT $limit (page 280)
-SUM() $sum
-COUNT() $sum
+和SQL的对应关系：  
+WHERE $match (page 281)  
+GROUP BY $group (page 278)  
+HAVING $match (page 281)  
+SELECT $project (page 285)  
+ORDER BY $sort (page 287)  
+LIMIT $limit (page 280)  
+SUM() $sum  
+COUNT() $sum  
 join No direct corresponding operator; however, the $unwind (page 290) operator allows for
-somewhat similar functionality, but with fields embedded within the document.  
+somewhat similar functionality, but with fields embedded within the document.    
 
 场景: 比如按省份城市统计发帖数目，比如按人统计发帖排名：  
 ```
