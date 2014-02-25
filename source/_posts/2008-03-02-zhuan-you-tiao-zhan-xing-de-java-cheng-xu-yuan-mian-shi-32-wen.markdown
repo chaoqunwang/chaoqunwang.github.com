@@ -16,11 +16,11 @@ description:
 　　第三，Static Nested Class 和 Inner Class的不同，说得越多越好（面试题有的很笼统）。 
 
 　　第四，&和&&的区别。 
-<!--more-->
+
 　　第五，HashMap和Hashtable的区别。 
 
 　　第六，Collection 和 Collections的区别。 
-
+<!--more-->
 　　第七，什么时候用assert. 
 
 　　第八，GC是什么？ 为什么要有GC？ 

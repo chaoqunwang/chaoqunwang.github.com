@@ -11,11 +11,11 @@ description:
 软件人员推荐书目:好的软件人员一生必看的六十本书，好歹看过一些（**加粗的**）：  
 来自:北京邮电大学:龙湘明（Dragon）  
 
-一、 科学哲学和管理哲学 13  <!--more-->  
+一、 科学哲学和管理哲学 13    
 1. “程序开发心理学”（The Psychology of Computer Programming ： Silver Anniversary Edition） 13    
 2. “系统化思维导论”（An Introduction to Systems Thinking， Silver Anniversary Edition） 14  
 3. “系统设计的一般原理”（ General Principles of Systems Design） 15  
-4. “质量·软件·管理（第1卷）—— 系统思维”（Quality Software Management：Systems Thinking） 16  
+4. “质量·软件·管理（第1卷）—— 系统思维”（Quality Software Management：Systems Thinking） 16  <!--more-->
 5. “成为技术领导者——解决问题的有机方法”(Becoming A Technical Leader：An Organic Problem-Solving Approach) 16  
 6. **“你的灯亮着吗？－发现问题的真正所在”**（ Are Your Lights On? How to Figure Out What the Problem Really Is） 18  
 7. **“程序员修炼之道”（The Pragmatic Programmer**） 20  
