@@ -4,11 +4,11 @@ title: "MongoDB常用命令和操作总结"
 date: 2013-05-24 16:29:59 +0800
 comments: true
 categories: tech mongodb
-keywords: mongodb mapreduce 常用命令 spring-data
+keywords: mongodb map-reduce 常用命令 spring-data aggregation
 tags: mongodb mapreduce
-description: mongodb mapreduce 常用命令 spring-data
+description: mongodb map-reduce 常用命令 spring-data aggregation
 ---
-做个总结，涉及到mongodb的常用命令、java client查询、spring data mongodb的使用，group，map/reduce等
+做个总结，涉及到mongodb的常用命令、java driver查询、spring data mongodb的使用，group，map-reduce，aggregation framework等
 ###关闭服务
 ```
 use admin
@@ -134,7 +134,7 @@ cri.andOperator(Criteria.where("passedtime").gt(fromTime), Criteria.where("passe
 // 错误的：Criteria.where("passedtime").gt(fromTime).and("passedtime").lt(toTime)
 ```
 
-####java client 可以这样：  
+####java driver 可以这样：  
 ```
 String total = "this.upCount+this.downCount < " + minCount;
 BasicDBObject query = new BasicDBObject("$where", total);
@@ -189,14 +189,14 @@ GroupBy groupBy = GroupBy
 		.reduceFunction(reduceFunction).finalizeFunction(finalizeFunction);
 ```
 				
-java client:
+java driver:
 ```
 public GroupCommand(DBCollection inputCollection, DBObject keys, DBObject condition, DBObject initial, String reduce, String finalize)
 DBCollection collection = mongoTemplate.getCollection("reply");
 collection.group(...);
 ```
 
-###map/reduce
+###map-reduce
 
 场景：展示发帖或回帖的时间趋势图，或者说按整点显示此小时内的发帖数和回帖数，展示成折线图
 创建时间保存的是number long，即date.getTime()的值，key要转成小时，使用new Date(y,m,d,h,0,0,0)  
@@ -340,10 +340,4 @@ return {count:total};
         "ok" : 1
 }
 ```
-
-
-
-
-
-
 
