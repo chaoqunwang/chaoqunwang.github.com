@@ -177,6 +177,18 @@ String collection = mongoTemplate.getCollectionName(Reply.class);
 GroupByResults<Reply> replys = mongoTemplate.group(cri, collection, groupBy, Reply.class);
 ```
 
+另一个例子：统计提问的回复（有内容的和简单赞踩），按权重计算热度
+```
+String reduceFunction = "function(doc, out) { if (doc.content) { out.contentCount += 1;} "
+		+ "else { out.simpleCount += 1; }; out.topic = doc.topic}";
+String finalizeFunction = "function(out) { out.rankScore = out.simpleCount * " + ratio
+		+ " + out.contentCount * (" + (10 - ratio) + ") } ";
+GroupBy groupBy = GroupBy
+		.keyFunction("function(doc) { return { topic: doc.topic }; }")
+		.initialDocument("{contentCount: 0, simpleCount: 0 }")
+		.reduceFunction(reduceFunction).finalizeFunction(finalizeFunction);
+```
+				
 java client:
 ```
 public GroupCommand(DBCollection inputCollection, DBObject keys, DBObject condition, DBObject initial, String reduce, String finalize)
