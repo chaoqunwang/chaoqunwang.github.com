@@ -18,7 +18,7 @@ shell:
 ```
 <!--more-->
 spring-data-mongodb:
-```
+``` java
 Criteria cri = Criteria.where("createtime").gt(1380000000000L);// 时间条件
 GroupBy groupBy = GroupBy
     	.key("topic").initialDocument("{total: 0 }")
@@ -28,7 +28,7 @@ GroupByResults<Reply> replys = mongoTemplate.group(cri, collection, groupBy, Rep
 ```
 
 另一个例子：统计提问的回复（有内容的和简单赞踩），按权重计算热度
-```
+``` java
 String reduceFunction = "function(doc, out) { if (doc.content) { out.contentCount += 1;} "
 		+ "else { out.simpleCount += 1; }; out.topic = doc.topic}";
 String finalizeFunction = "function(out) { out.rankScore = out.simpleCount * " + ratio
@@ -40,7 +40,7 @@ GroupBy groupBy = GroupBy
 ```
 				
 java driver:
-```
+``` java
 public GroupCommand(DBCollection inputCollection, DBObject keys, DBObject condition, DBObject initial, String reduce, String finalize)
 DBCollection collection = mongoTemplate.getCollection("reply");
 collection.group(...);
@@ -52,7 +52,7 @@ collection.group(...);
 创建时间保存的是number long，即date.getTime()的值，key要转成小时，使用new Date(y,m,d,h,0,0,0)  
 标签：[mongodb](/blog/categories/mongodb)  
 spring-data-mongodb:
-```
+``` java
 String mapFunction = "function () { var key=new Date(new Date(this.createtime).getFullYear(),"
 		+ "new Date(this.createtime).getMonth(), new Date(this.createtime).getDate(),"
 		+ "new Date(this.createtime).getHours(), 0, 0, 0).getTime(); "
@@ -75,7 +75,7 @@ for (Replys reply : replys) {
 ```
 
 需要注意的是：结果存在reply的value字段里，是为了后面构造map好处理；场景不一样的话，先使用shell看看结果
-```
+``` java
 private ReplyStat value;
 class ReplyStat {
 	private Long hour;
@@ -84,7 +84,7 @@ class ReplyStat {
 
 
 shell:
-```
+``` javascript
 db.runCommand({ mapreduce: "reply", 
  map : function Map() {
 	var key=new Date(new Date(this.createtime).getFullYear(), 
@@ -112,7 +112,7 @@ db.runCommand({ mapreduce: "reply",
 ```
 
 ======result======
-```
+``` javascript
 {
         "results" : [
                 {
@@ -158,7 +158,7 @@ reduce里
 return {count:total};
 ```
 结果就会是：
-```
+``` javascript
 {
         "results" : [
                 {

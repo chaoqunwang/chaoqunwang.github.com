@@ -86,7 +86,7 @@ db.topic.find().skip(10).limit(5).count(true);
 ```
 ###dbref关联  
 多查一  
-```
+``` javascript
 > db.reply.findOne({creator:"wy"}, {creator:1,topic:1})
 {
         "_id" : ObjectId("52d3ae720b6316a72bb31c45"),
@@ -106,7 +106,7 @@ DBRef("topic", ObjectId("52cf620a0b6307f6a0d44450"))
 ```  
 
 一查多  
-```
+``` javascript
 > topic=db.reply.findOne({creator:"wy"}).topic
 DBRef("topic", ObjectId("52cf620a0b6307f6a0d44450"))
 > db.reply.find({"topic":topic}).count()
@@ -127,7 +127,7 @@ DBRef("topic", ObjectId("52cf620a0b6307f6a0d44450"))
 2
 ```
 ####spring data mongodb
-```
+``` java
 Criteria cri = Criteria.where("topic.$id").is(new ObjectId("52d8f8950b6316a72bb31c7c"));
 Reply reply = mongoTemplate.findOne(Query.query(cri), Reply.class);
 
@@ -136,7 +136,7 @@ cri.andOperator(Criteria.where("passedtime").gt(fromTime), Criteria.where("passe
 ```
 
 ####java driver 可以这样：  
-```
+``` java
 String total = "this.upCount+this.downCount < " + minCount;
 BasicDBObject query = new BasicDBObject("$where", total);
 query.append("passedtime", new BasicDBObject("$gt", fromTime).append("$lt", toTime));

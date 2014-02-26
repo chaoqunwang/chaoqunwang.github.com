@@ -33,7 +33,7 @@ join No direct corresponding operator; however, the $unwind (page 290) operator 
 somewhat similar functionality, but with fields embedded within the document.    
 
 场景: 比如按省份城市统计发帖数目，比如按人统计发帖排名：  
-```
+``` javascript
 db.topic.aggregate(
 { $match: { createtime : { $gt:1370000000000 } } },
 { $group : {
@@ -70,7 +70,7 @@ db.topic.aggregate(
 ```
 标签：[mongodb](/blog/categories/mongodb)  
 java driver 官方示例：  
-```
+``` java
 // create our pipeline operations, first with the $match
 DBObject match = new BasicDBObject("$match", new BasicDBObject("type", "airfare") );
 
@@ -92,7 +92,7 @@ AggregationOutput output = collection.aggregate( match, project, group );
 spring data mongodb，@since 1.3，注意升级  
 官方例子是对城市人口做统计，group两次（对第一次group的结果再group）  
 好处在于对结果进行了封装，返回List，注意ZipInfoStats嵌套City，使用nested和bind:  
-```  
+``` java
 class ZipInfo {
 	String id;
 	String city;
@@ -134,7 +134,7 @@ ZipInfoStats firstZipInfoStats = result.getMappedResults().get(0);
 ```
 
 对应的shell即是：  
-```
+``` javascript
 db.zipcodes.aggregate( 
 { $group:
 	{	_id: { state: "$state", city: "$city" },
