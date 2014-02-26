@@ -4,9 +4,9 @@ title: "本地搭建SVN服务器及配置"
 date: 2008-10-22 20:50:35 -0800
 comments: true
 categories: tech web
-keywords: 
+keywords: svn 版本控制 服务器配置
 tags: svn
-description: 
+description: svn 版本控制 服务器配置
 ---
 ####1. 创建SVN数据库  
 

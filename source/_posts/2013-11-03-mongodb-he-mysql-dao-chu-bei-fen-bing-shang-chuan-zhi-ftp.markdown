@@ -129,7 +129,7 @@ bye
 !
 echo "============== $MONGO_DB backup ends at $NEW_TIMESTAMP =============="
 ```  
-
+标签：[技术](/blog/categories/tech)  
 3. mysql导出、压缩、上传脚本  
 ----
 ```

@@ -65,6 +65,7 @@ db.user.find({"address.city":101,"address.province":100})  # one record
 ```
 注意：key的顺序,因为MongoDB使用BSON的二进制数据格式  
 注意：limit的值例如为-5的话等同于5，为0则返回全部，汗  
+标签：[技术](/blog/categories/tech)  
 ```
 db.user.find({creationTime:{$gt:1300000000000, $lte:1310000000000}); 
 ```

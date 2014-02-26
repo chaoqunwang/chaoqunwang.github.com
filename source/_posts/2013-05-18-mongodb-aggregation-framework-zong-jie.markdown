@@ -68,7 +68,7 @@ db.topic.aggregate(
 	"ok" : 1
 }
 ```
-
+标签：[mongodb](/blog/categories/mongodb)  
 java driver 官方示例：  
 ```
 // create our pipeline operations, first with the $match

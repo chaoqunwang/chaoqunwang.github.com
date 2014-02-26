@@ -115,7 +115,8 @@ duoshuo_show_comment_count: true
 {% endif %}  
 ```  
 
-创建source/_includes/post/duoshuo.html文件，将从多说获得的代码放入其中。  
+创建source/_includes/post/duoshuo.html文件，将从多说获得的代码放入其中。 
+标签：[技术](/blog/categories/tech)   
 ```
 <!-- Duoshuo Comment BEGIN -->
     <div class="ds-thread"></div>

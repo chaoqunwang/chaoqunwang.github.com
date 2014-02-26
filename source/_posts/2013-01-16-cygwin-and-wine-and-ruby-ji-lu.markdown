@@ -86,6 +86,7 @@ ruby dk.rb review
 ruby dk.rb install
 ```
 出现utf-8错误，使用chcp 1252，再进行上三句，done  
+标签：[技术](/blog/categories/tech)  
 然后配置octopress环境，英文下rake成功，有中文（比如文章分类、标签带中文的）不成;  
 [摘录自txgcwm.github.io](http://txgcwm.github.io/)
 >在实际使用（rake generate/rake preview）的时候，若blog整体采用了非ascii码的编码格式（比如utf-8）就会出现类似这样的错误：  

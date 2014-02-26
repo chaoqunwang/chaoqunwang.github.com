@@ -6,7 +6,7 @@ comments: true
 categories: tech java 算法 代码
 keywords: java 算法 代码
 tags: java 算法
-description: 
+description: 9种排序算法的java实现
 ---
 使用枚举类型存入各算法和接口实现，main方法打印排序后的数组，也可以加入nanotime、currentTimeMillis测试效率，但可能数组太小不明显
 
@@ -43,6 +43,9 @@ public class SortTest {
 	}
 }
 
+```
+标签：[算法](/blog/categories/suan-fa/)  
+```
 /**
  * 插入排序算法
  */

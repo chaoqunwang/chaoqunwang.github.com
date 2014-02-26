@@ -50,7 +50,7 @@ collection.group(...);
 
 场景：展示发帖或回帖的时间趋势图，或者说按整点显示此小时内的发帖数和回帖数，展示成折线图
 创建时间保存的是number long，即date.getTime()的值，key要转成小时，使用new Date(y,m,d,h,0,0,0)  
-
+标签：[mongodb](/blog/categories/mongodb)  
 spring-data-mongodb:
 ```
 String mapFunction = "function () { var key=new Date(new Date(this.createtime).getFullYear(),"
