@@ -72,14 +72,17 @@ compressableMimeType="text/html,text/xml,text/plain,application/octet-stream" />
 
 ####第五步- 数据库性能调优
 Tomcat性能在等待数据库查询被执行期间会降低。如今大多数应用程序都是使用可能包含“命名查询”的关系型数据库。如果是那样的话，Tomcat会在启动时默认加载命名查询，这个可能会提升性能。另一件重要事是确保所有数据库连接正确地关闭。给数据库连接池设置正确值也是十分重要的。我所说的值是指Resource要素的最大空闲数（maxIdle），最大连接数（maxActive）,最大建立连接等待时间（maxWait）属性的值。因为配置依赖与应用要求，我也不能在本文指定正确的值。你可以通过调用数据库性能测试来找到正确的值。  
+
 ####第6步 – Tomcat原生库
-Tomcat的原生库基于Apache可移植运行时（Apache Portable Runtime简称APR），给程序员提供了超强的扩展性和性能，在产品运作中帮助融合原生的服务器技术以展现最佳的性能。想知道安装说明的朋友请参考Tomcat Native Library – (APR) Installation。
+Tomcat的原生库基于Apache可移植运行时（Apache Portable Runtime简称APR），给程序员提供了超强的扩展性和性能，在产品运作中帮助融合原生的服务器技术以展现最佳的性能。想知道安装说明的朋友请参考Tomcat Native Library – (APR) Installation。  
+
 ####第7步 – 其他选项
 这些选项是：
 开启浏览器的缓存，这样读取存放在webapps文件夹里的静态内容会更快，大大推动整体性能。
 每当开机时，Tomcat服务器应当自动地重启。
 一般情况下HTTPS请求会比HTTP请求慢。如果你想要更好的安全性，即使慢一点我们还是要选择HTTPS。  
 
-就这么多啦。在这篇文章里，我教给了大家一些提高Tomcat服务器性能的方法。如果你觉得这篇文章有用，或者你对提高Tomcat服务器性能有别的看法，请不要忘记留下宝贵的评论。祝你今天编程愉快！
+就这么多啦。在这篇文章里，我教给了大家一些提高Tomcat服务器性能的方法。如果你觉得这篇文章有用，或者你对提高Tomcat服务器性能有别的看法，请不要忘记留下宝贵的评论。祝你今天编程愉快！  
 全文完  
-另附资料 [转：Tomcat Server.xml配置文件](http://blog.csdn.net/itmagic_jack/article/details/6290239)  
+
+另附tomcat5.5-6.0 server.xml参数说明：[转：Tomcat Server.xml配置文件](http://blog.csdn.net/itmagic_jack/article/details/6290239)  
