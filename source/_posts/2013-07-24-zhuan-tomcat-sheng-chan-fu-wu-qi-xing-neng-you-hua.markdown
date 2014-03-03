@@ -4,21 +4,22 @@ title: "[转]Tomcat 生产服务器性能优化"
 date: 2013-07-24 18:08:06 -0800
 comments: true
 categories: tech tomcat
-keywords: 
+keywords: Tomcat 生产 服务器 性能优化
 tags: tomcat jvm
-description: 
+description: Tomcat生产服务器性能优化
 ---
 tomcat优化+eclipse优化之类的文章网上有很多，这个收藏当作就手的工具。  
 <a href="http://www.oschina.net/translate/tomcat-performance-tuning" target="_blank">来自oschina</a>  : 参与翻译(4人)：Garfielt, Lesus, MtrS, 大志darcy  
+
 [正文]考虑一下这种场景，你开发了一个应用，它有十分优秀的布局设计，最新的特性以及其它的优秀特点。但是在性能这方面欠缺，不管这个应用如何都会遭到客户拒绝。客户总是期望它们的应用应该有更好的性能。如果你在产品中使用了Tomcat服务器，那么这篇文章就会给你几方面来提升Tomcat服务器的性能。<!--more-->  
 感谢ITWorld article给本文提供资源。经过沉思我已经知道了和早期版本相比最新的Tomcat提供更好的性能和稳定性。所以一直使用最新的Tomcat版本。现在本文使用下面几步来提高Tomcat服务器的性能。
-1. 增加JVM堆内存大小
-2. 修复JRE内存泄漏
-3. 线程池设置
-4. 压缩
-5. 数据库性能调优
-6. Tomcat本地库
-7. 其它选项  
+1. 增加JVM堆内存大小  
+2. 修复JRE内存泄漏  
+3. 线程池设置  
+4. 压缩  
+5. 数据库性能调优  
+6. Tomcat本地库  
+7. 其它选项    
 
 ####第一步  – 提高JVM栈内存Increase JVM heap memory
 你使用过tomcat的话，简单的说就是“内存溢出”. 通常情况下，这种问题出现在实际的生产环境中.产生这种问题的原因是tomcat使用较少的内存给进程,通过配置TOmcat的配置文件(Windows 下的catalina.bat或Linux下的catalina.sh)可以解决这种问题.这种解决方法是通过增加JVM的栈内存实现的.也就是说，JVM通常不去调用垃圾回收器，所以服务器可以更多关注处理web请求，并要求尽快完成。要更改文件(catalina.sh) 位于"\tomcat server folder\bin\catalina.sh"，下面，给出这个文件的配置信息，  
@@ -80,4 +81,5 @@ Tomcat的原生库基于Apache可移植运行时（Apache Portable Runtime简称
 一般情况下HTTPS请求会比HTTP请求慢。如果你想要更好的安全性，即使慢一点我们还是要选择HTTPS。  
 
 就这么多啦。在这篇文章里，我教给了大家一些提高Tomcat服务器性能的方法。如果你觉得这篇文章有用，或者你对提高Tomcat服务器性能有别的看法，请不要忘记留下宝贵的评论。祝你今天编程愉快！
-
+全文完  
+另附资料 [转：Tomcat Server.xml配置文件](http://blog.csdn.net/itmagic_jack/article/details/6290239)  
