@@ -69,6 +69,12 @@ db.user.find({"address.city":101,"address.province":100})  # one record
 ```
 db.user.find({creationTime:{$gt:1300000000000, $lte:1310000000000}); 
 ```
+$elemMatch:前2个不对，匹配数组查询要用第3个  
+```
+db.blog.find({"comments.name": "foo", "comments.content": "bar"});
+db.blog.find({"comments": {"name": "foo", "content": "bar"}});
+db.blog.find({"comments":{"$elemMatch":{"name":"joke", "content":"bad good ugly"}}});
+```
 使用where可做运算  
 ```
 db.reply.find({$where: "this.upCount+this.downCount<1"}); 
