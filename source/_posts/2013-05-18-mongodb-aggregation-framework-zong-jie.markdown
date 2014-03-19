@@ -4,11 +4,11 @@ title: "mongodb aggregation framework总结"
 date: 2013-05-18 12:56:21 +0800
 comments: true
 categories: tech mongodb
-keywords: mongodb map-reduce spring-data aggregation
+keywords: mongodb MapReduce spring-data aggregation
 tags: mongodb aggregation
-description: mongodb map-reduce  spring-data aggregation
+description: mongodb MapReduce spring-data aggregation
 ---
-2.2版本新特性，比group, map-reduce好，reference里有很多操作和[运算]可用  
+2.2版本新特性，比group, MapReduce简单强大，reference里有很多操作和[运算]可用  
 pipeline operators:  
 • $project (page 285)  
 • $match (page 281)  

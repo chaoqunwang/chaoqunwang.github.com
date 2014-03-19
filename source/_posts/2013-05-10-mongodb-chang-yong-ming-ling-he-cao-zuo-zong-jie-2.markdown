@@ -4,11 +4,11 @@ title: "MongoDB常用命令和操作总结2"
 date: 2013-05-10 10:09:23 +0800
 comments: true
 categories: tech mongodb
-keywords: mongodb map-reduce 常用命令 spring-data aggregation
+keywords: mongodb MapReduce 常用命令 spring-data aggregation
 tags: mongodb mapreduce
-description: mongodb map-reduce 常用命令 spring-data aggregation
+description: mongodb MapReduce 常用命令 spring-data aggregation
 ---
-做个总结，涉及到mongodb的常用命令、java driver查询、spring data mongodb的使用，group，map-reduce，aggregation framework等  
+做个总结，涉及到mongodb的常用命令、java driver查询、spring data mongodb的使用，group，MapReduce，aggregation framework等  
 ###group
 topic : reply = one to many，按topic(或发布者)分组统计回复数
 shell:
@@ -46,7 +46,7 @@ DBCollection collection = mongoTemplate.getCollection("reply");
 collection.group(...);
 ```
 
-###map-reduce
+###MapReduce
 
 场景：展示发帖或回帖的时间趋势图，或者说按整点显示此小时内的发帖数和回帖数，展示成折线图
 创建时间保存的是number long，即date.getTime()的值，key要转成小时，使用new Date(y,m,d,h,0,0,0)  

@@ -4,9 +4,9 @@ title: "MongoDB常用命令和操作总结1"
 date: 2013-05-09 16:29:59 +0800
 comments: true
 categories: tech mongodb
-keywords: mongodb map-reduce 常用命令 spring-data aggregation
+keywords: mongodb MapReduce 常用命令 spring-data aggregation
 tags: mongodb mapreduce
-description: mongodb map-reduce 常用命令 spring-data aggregation
+description: mongodb MapReduce 常用命令 spring-data aggregation
 ---
 做个总结，涉及到mongodb的常用命令、java driver查询、spring data mongodb的使用，group，map-reduce，aggregation framework等
 ###关闭服务
