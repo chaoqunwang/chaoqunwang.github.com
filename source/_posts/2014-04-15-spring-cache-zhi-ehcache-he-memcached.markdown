@@ -3,13 +3,15 @@ layout: post
 title: "Spring Cache之Ehcache和Memcached"
 date: 2014-04-15 14:52:05 +0800
 comments: true
-categories: tech spring-cache
-keywords: Spring Cache Ehcache Memcached LinkedHashMap
-tags: Spring Ehcache Memcached LinkedHashMap
-description: Spring Cache Ehcache Memcached LinkedHashMap
+categories: tech spring memcached
+keywords: Spring Cache Ehcache Memcached HashMap LinkedHashMap synchronizedMap ConcurrentHashMap
+tags: Spring Ehcache Memcached HashMap
+description: Spring Cache Ehcache Memcached HashMap LinkedHashMap synchronizedMap ConcurrentHashMap
 ---
-spring框架从3.1版本开始提供了缓存支持：在spring-context.jar里的org.springframework.cache包，以及spring-context-support.jar里的org.springframework.cache包；而且提供了基于ConcurrentHashMap、JCacheCache、EhCache、GuavaCache的实现。这里我们先看下基于EhCache的使用，然后考虑集成Memcached；版本：spring3.2和spring4，EhCache2.7，spyMemcached2.8；内容还涉及HashMap、LinkedHashMap、synchronizedMap、ConcurrentHashMap、ReentrantLock……  
-[查阅spring 4.0.x reference](http://docs.spring.io/spring/docs/4.0.x/spring-framework-reference/html/cache.html)<!--more-->  
+spring框架从3.1版本开始提供了缓存支持：在spring-context.jar里的org.springframework.cache包，以及spring-context-support.jar里的org.springframework.cache包；而且提供了基于ConcurrentHashMap、JCacheCache、EhCache、GuavaCache的实现。  
+这里我们先看下基于EhCache的使用，然后考虑集成Memcached；版本：spring3.2和spring4，EhCache2.7，spyMemcached2.8；  
+内容还涉及HashMap、LinkedHashMap、synchronizedMap、ConcurrentHashMap、ReentrantLock……    
+[参考资料：spring framework 4.0.x reference](http://docs.spring.io/spring/docs/4.0.x/spring-framework-reference/html/cache.html)<!--more-->  
 
 一、EhCache配置  
 ----
@@ -70,7 +72,7 @@ spring框架从3.1版本开始提供了缓存支持：在spring-context.jar里�
 public class Notice implements Serializable {
 ```
 
-标签：[技术](/blog/categories/tech)  
+标签：[spring](/blog/categories/spring)  
 
 这样ehcache集成完了，get方法对同一条记录只从数据库查询一次，cache是成功的，但search方法却一直读库，这里没有设置cache的key，设置的话如果是固定的，那么每次结果集都一样，不会更新；文档说不设key，将使用默认key生成器DefaultKeyGenerator：  
 ```java  
@@ -93,8 +95,8 @@ public class DefaultKeyGenerator implements KeyGenerator {
 	}
 }
 ```
-####问题####  
-就在于object.hashCode()，看方法的参数string没问题，date没问题，Integer数组使用的就是Object类的hashCode是个内存地址，每次执行都变，要改用Arrays.hashCode(array)才不会变；当然，分页类page也要重写hashCode；顺便说下，apache的commons-lang.jar提供了EqualsBuilder、HashCodeBuilder、ToStringBuilder可用于重写各方法。
+***问题***就在于object.hashCode()，看方法的参数string没问题，date没问题，Integer数组使用的就是Object类的hashCode是个内存地址，每次执行都变，要改用Arrays.hashCode(array)才不会变；  
+当然，分页类page也要重写hashCode；顺便说下，apache的commons-lang.jar提供了EqualsBuilder、HashCodeBuilder、ToStringBuilder可用于重写各方法。
 ####4. 自定义key生成器  
 解决上面问题：重写生成器（继承DefaultKeyGenerator，需要注意的是对于param是list,set,map取hashcode，其泛型类也要重写hashCode方法）并配置:  
 ```
@@ -181,43 +183,236 @@ memcached.useNagleAlgorithm=false
 
 标签：[技术](/blog/categories/tech)  
 ####2. 实现MemcachedCacheManager和MemcachedCache
-参考ehcache的源码（org.springframework.cache.ehcache包里）：EhCacheCache和EhCacheCacheManager，manager用来获取cache，重写了getCache和loadCaches方法，这样配置在ehcache.xml里的cache name都会实例化成每个EhCacheCache，当执行到@Cacheable的方法上，就会调用getCache(name)获取cache，再根据key取得value；  
+参考ehcache的源码（org.springframework.cache.ehcache包里）：EhCacheCache和EhCacheCacheManager，manager用来获取cache，重写了getCache和loadCaches方法，这样配置在ehcache.xml里的cache name都会实例化成每个EhCacheCache，当执行到@Cacheable的方法上，就会调用getCache(name)获取cache，再根据key取得value；   
+
+***MemcachedCacheManager***：   
+```java 
+public class MemcachedCacheManager extends AbstractCacheManager {
+	// cache集合
+	private Collection<Cache> caches;
+	// 注入memcachedClient（后面会有配置）
+	private MemcachedClient client;
+
+	public MemcachedCacheManager() {}
+
+	public MemcachedCacheManager(MemcachedClient client) {
+		this.client = client;
+	}
+
+	public void setClient(MemcachedClient client) {
+		this.client = client;
+	}
+	
+	// AbstractCacheManager不允许loadCaches返回空，所以初始化时添加一个默认cache
+	protected Collection<? extends Cache> loadCaches() {
+		if (caches == null) {
+			caches = new LinkedHashSet<Cache>();
+			caches.add(new MemcachedCache("DEFAULT_CACHE", client));
+		}
+		return caches;
+	}
+
+	// 根据名称获取cache，对应注解里的value如notice_cache，没有就创建并加入cache管理
+	public Cache getCache(String name) {
+		Cache cache = super.getCache(name);
+		if (cache == null) {
+			cache = new MemcachedCache(name, client);
+			super.addCache(cache);
+		}
+		return cache;
+	}
+}
+```
+这样应用启动时实例化manager，在执行加缓存注解的的方法时，会调用getCache(获取或新建cache)，根据缓存的key从cache中取值（没有就读库，然后将结果加入cache，下次相同的key就能取到缓存的值了）  
+要写MemcachedCache实现```org.springframework.cache.Cache```接口，先来分析***EhCacheCache***： 
+```java
+public class EhCacheCache implements Cache {
+	// 使用Ehcache的cache，来做get,put,evict...，集成memcached就要使用memcachedClient
+	private final Ehcache cache;
+
+	/**
+	 * Create an {@link EhCacheCache} instance.
+	 * @param ehcache backing Ehcache instance
+	 */
+	public EhCacheCache(Ehcache ehcache) {
+		Assert.notNull(ehcache, "Ehcache must not be null");
+		Status status = ehcache.getStatus();
+		Assert.isTrue(Status.STATUS_ALIVE.equals(status),
+				"An 'alive' Ehcache is required - current cache is " + status.toString());
+		this.cache = ehcache;
+	}
+	// 也就是ehcache.xml里配置的
+	public String getName() {
+		return this.cache.getName();
+	}
+	// 底层使用的cache，要改用memcachedClient
+	public Ehcache getNativeCache() {
+		return this.cache;
+	}
+	// 从cache取值，改用memcachedClient取值
+	public ValueWrapper get(Object key) {
+		Element element = this.cache.get(key);
+		return (element != null ? new SimpleValueWrapper(element.getObjectValue()) : null);
+	}
+	// 改用memcachedClient存值
+	public void put(Object key, Object value) {
+		this.cache.put(new Element(key, value));
+	}
+	// 擦除delete
+	public void evict(Object key) {
+		this.cache.remove(key);
+	}
+	// 清空cache，这个是例如@CacheEvict(value = "notice_cache", allEntries = true)时调用的
+	public void clear() {
+		this.cache.removeAll();
+	}
+}
+```
+好了，来写memcachedCache，***问题来了***：  
+1.clear方法，spy的client没有removeAll，clear之类的方法，有个flush是全部清空，服务器N多个cache都会擦掉  
+2.@CacheEvict(value = "notice_cache", allEntries = true)就是用的clear，“添加个notice都要清掉其他非notice_cache缓存”就很可怕，能不能根据cache名称清除呢？
+3.上面两个实际是一个问题，memcached是key-value存储，所以要对key进行分组，采用一个集合保存key，然后将实际的key-value存入  
+常用的集合数据类型如list，map，set它也支持，考虑到key的字符限制和单个value不超过1MB，使用一个set存储一个cache里所有的key能达到2万以上(看key的字节数)，使用压缩存储的更多，同时使用LRU（如LinkedHashMap，将过期的或长期不用的移除），基本满足使用  
+标签：[memcached](/blog/categories/memcached)  
+
+***MemcachedCache***：
+```java
+public class MemcachedCache implements Cache {
+	// 单个cache存储的key最大数量
+	private static final int maxElement = 10000;
+	// 默认过期时间10天
+	private static final int expire = 10 * 24 * 60 * 60;
+	private String name;
+	private MemcachedClient client;
+	// 存储key的集合，使用LinkedHashMap实现
+	private KeySet keys;
+
+	public MemcachedCache() {}
+
+	public MemcachedCache(String name, MemcachedClient client) {
+		this.name = name;
+		this.keys = new KeySet(maxElement);
+		this.client = client;
+	}
+
+	public String getName() {
+		return this.name;
+	}
+
+	public Object getNativeCache() {
+		return this.client;
+	}
+	// ckey是key+cacheName作为前缀，也是最终存入缓存的key
+	public ValueWrapper get(Object key) {
+		String ckey = toStringWithCacheName(key);
+		if (keys.containsKey(ckey)) {
+			Object value = client.get(ckey);
+			return value != null ? new SimpleValueWrapper(value) : null;
+		} else {
+			return null;
+		}
+	}
+	// 将ckey加入key集合并将ckey-value存入缓存
+	public void put(Object key, Object value) {
+		String ckey = toStringWithCacheName(key);
+		keys.add(ckey);
+		client.set(ckey, expire, value);
+	}
+	// 从keys集合清除ckey，并从缓存清除
+	public void evict(Object key) {
+		String ckey = toStringWithCacheName(key);
+		keys.remove(ckey);
+		client.delete(ckey);
+	}
+
+	private String toStringWithCacheName(Object obj) {
+		return name + "." + String.valueOf(obj);
+	}
+	// 遍历清除
+	public void clear() {
+		for (String ckey : keys.keySet()) {
+			client.delete(ckey);
+		}
+		keys.clear();
+	}
+
+	public MemcachedClient getClient() {
+		return this.client;
+	}
+
+	public void setClient(MemcachedClient client) {
+		this.client = client;
+	}
+	
+	public Map<String, String> getKeys() {
+		return this.keys;
+	}
+}
+```
+这里keys也可以使用cacheName作为key存入缓存，就需要在put,evict,clear方法里使用```client.replace(name, expire, keys);```保持更新，但好像成本多了，收益不大  
+
+***KeySet***继承LinkedHashMap，为了使用removeEldestEntry，满了移除最旧元素，保持initSize:
+```java
+public class KeySet extends LinkedHashMap<String, String> {
+	private int max;
+
+	public KeySet(int initSize) {
+		super(initSize, 0.75F, true);
+		this.max = initSize;
+	}
+
+	public void add(String key) {
+		super.put(key, null);
+	}
+
+	public boolean removeEldestEntry(Map.Entry<String, String> eldest) {
+		return size() > this.max;
+	}
+}
+```
+
+####3. 线程安全  
+HashSet\HashMap都不是线程安全的，例如[Java HashMap的死循环](http://coolshell.cn/articles/9606.html);  
+安全的如Collections.synchronizedMap和ConcurrentHashMap（不允许value为null）；  
+两者的区别是锁不同：synchronizedMap使用对象锁，相当于在方法上声明synchronized；ConcurrentHashMap比较复杂，在segment上加锁，将范围控制的很小，因而并发性能就高；  
+这里使用LinkedHashMap，ConcurrentHashMap不好包装，synchronizedMap效率低，不如加个ReentrantLock，或者使用读写锁ReentrantReadWriteLock(但这篇文章介绍了读写锁可能存在问题：[小心LinkedHashMap的get()方法](http://skydream.iteye.com/blog/1562880))：  
+```java
+	lock.lock();
+	try {
+		client.set(...);
+	} finally {
+		lock.unlock();
+	} 
+```
+下面是HashMap占用cpu 100% bug的代码：
+```java
+public class MapTest {
+	public static void main(String[] args) throws InterruptedException {
+		Map<String, String> temp = new HashMap<>(2);
+		final Map<String, String> map = temp;
+		//		final Map<String, String> map = new LinkedHashMap<>(temp);
+		//		final Map<String, String> map = new ConcurrentHashMap<>(temp);
+		//		final Map<String, String> map = Collections.synchronizedMap(temp);
+
+		Thread t = new Thread(new Runnable() {
+			public void run() {
+				for (int i = 0; i < 10000; i++) {
+					new Thread(new Runnable() {
+						public void run() {
+							map.put(UUID.randomUUID().toString(), "");
+						}
+					}).start();
+				}
+			}
+		});
+		t.start();
+		t.join();
+	}
+}
+```
+
+####4. 测试Spring 4.0.x Cache  
+以上3.2.x使用正常，4.0版本改动了key生成器，所以测试下  
 
 未完待续
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
