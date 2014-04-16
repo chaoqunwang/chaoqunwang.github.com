@@ -17,7 +17,7 @@ module AppendFooterFilter
 #            <a href='#{post.full_url}'>#{post.full_url}</a><br/>
 #            &nbsp;written by &nbsp;<a href='#{url}'>#{author}</a> &nbsp;posted at &nbsp;<a href='#{url}'>#{url}</a>
 #            </p>]
-	post.content.gsub(/<!--\s*more\s*-->/i, "<!--more--><a href='#{url}' style='color:white;text-decoration:none;'>#{author}</a>  ") + %Q[<p class='post-footer' style='background:none repeat scroll 0pt 0pt #eee;padding: 5px;margin-top:10px;color:gray;font-size:90%;'>
+	post.content.gsub(/<!--\s*more\s*-->/i, "<!--more--><a href='#{url}' style='color:#f5f5f5;text-decoration:none;'>#{author}</a>  ") + %Q[<p class='post-footer' style='background:none repeat scroll 0pt 0pt #eee;padding: 5px;margin-top:10px;color:gray;font-size:90%;'>
 			&nbsp;#{pre or 'original link:'}
 			<a href='#{post.full_url}'>#{post.full_url}</a><br/>
 			&nbsp;written by &nbsp;<a href='#{url}'>#{author}</a> &nbsp;posted at &nbsp;<a href='#{url}'>#{url}</a><br/>
