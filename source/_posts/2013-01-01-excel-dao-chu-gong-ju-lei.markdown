@@ -9,8 +9,7 @@ tags: excel poi
 description: 
 ---
 前端使用jquery easyui，datagrid添加导出按钮（另外的js逻辑）即可将当前页或所有页数据(支持查询条件的导出)导出到excel，支持office excel 2003和2007+;  
-使用apache poi（+ooxml）实现，主要代码片段如下：  
-<!--more-->
+使用apache poi（+ooxml）实现，主要代码片段如下：  <!--more-->
 ```java
 package com.colalife.core.util.excel;
 

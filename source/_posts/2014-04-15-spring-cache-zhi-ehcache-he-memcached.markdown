@@ -9,8 +9,8 @@ tags: Spring Ehcache Memcached LinkedHashMap
 description: Spring Cache Ehcache Memcached LinkedHashMap
 ---
 spring框架从3.1版本开始提供了缓存支持：在spring-context.jar里的org.springframework.cache包，以及spring-context-support.jar里的org.springframework.cache包；而且提供了基于ConcurrentHashMap、JCacheCache、EhCache、GuavaCache的实现。这里我们先看下基于EhCache的使用，然后考虑集成Memcached；版本：spring3.2和spring4，EhCache2.7，spyMemcached2.8；内容还涉及HashMap、LinkedHashMap、synchronizedMap、ConcurrentHashMap、ReentrantLock……  
-[查阅spring 4.0.x reference](http://docs.spring.io/spring/docs/4.0.x/spring-framework-reference/html/cache.html)  
-<!--more-->
+[查阅spring 4.0.x reference](http://docs.spring.io/spring/docs/4.0.x/spring-framework-reference/html/cache.html)<!--more-->  
+
 一、EhCache配置  
 ----
 ###1. 添加相关jar，添加ehcache.xml  
@@ -65,7 +65,7 @@ spring框架从3.1版本开始提供了缓存支持：在spring-context.jar里�
 		//...
 	}
 ```
-至此配置完了，run一下，报错：没有序列化，好吧  
+至此配置完了，run一下，报错：没有序列化，将vo实现Serializable接口  
 ```java  
 public class Notice implements Serializable {
 ```

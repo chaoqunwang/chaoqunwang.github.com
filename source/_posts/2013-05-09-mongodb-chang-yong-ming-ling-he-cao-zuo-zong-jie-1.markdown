@@ -18,7 +18,8 @@ db.shutdownServer()
 ```
 use admin
 db.runCommand({"fsync":1,"lock":1})
-```<!--more-->
+```
+<!--more-->
 ###解锁
 ```
 use admin

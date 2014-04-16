@@ -19,8 +19,8 @@ description:
 
 　　第五，HashMap和Hashtable的区别。 
 
-　　第六，Collection 和 Collections的区别。 
-<!--more-->
+　　第六，Collection 和 Collections的区别。 <!--more-->
+
 　　第七，什么时候用assert. 
 
 　　第八，GC是什么？ 为什么要有GC？ 

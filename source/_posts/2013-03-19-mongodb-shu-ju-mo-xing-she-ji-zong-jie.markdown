@@ -17,8 +17,8 @@ mongoDb的表设计(Schema design)不同于关系型数据库如oracle，mysql�
 行：view/row(s)	vs json document  
 索引：index	vs index  
 关联：join vs	embedding & linking across documents  
-分片：partition	vs shard  
-<!--more-->
+分片：partition	vs shard  <!--more-->
+
 最佳实践  
 ----
 1、顶级对象，一般使用独立的collection，区别于嵌入  

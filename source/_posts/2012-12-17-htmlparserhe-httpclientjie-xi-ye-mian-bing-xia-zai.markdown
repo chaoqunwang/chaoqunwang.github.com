@@ -8,8 +8,7 @@ keywords: htmlparser jsoup httpclient
 tags: htmlparser jsoup httpclient
 description: htmlparser,jsoup和httpclient解析页面并下载
 ---
-如果你想抓取某个网页（如新浪、csdn之类）获取最新资讯列表，或者到某个站点下载文件、图片之类，就需要html解析例如htmlparser,jsoup之类的jar包，下载可用httpclient。如果想更高效率可以搞线程池，抓取解析线程和下载线程，类似消费者和生产者模型（此处不涉及，仅演示使用），代码如下：  
-<!--more-->
+如果你想抓取某个网页（如新浪、csdn之类）获取最新资讯列表，或者到某个站点下载文件、图片之类，就需要html解析例如htmlparser,jsoup之类的jar包，下载可用httpclient。如果想更高效率可以搞线程池，抓取解析线程和下载线程，类似消费者和生产者模型（此处不涉及，仅演示使用），代码如下：  <!--more-->
 ```java
     public static Set<String> digLinks(String address) throws Exception {
 		Set<String> result = new HashSet<String>();

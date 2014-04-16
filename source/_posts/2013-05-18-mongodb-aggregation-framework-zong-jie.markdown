@@ -17,8 +17,7 @@ pipeline operators:
 • $unwind (page 290)// 用于嵌套文档，可对数组拆解  
 • $group (page 278)  
 • $sort (page 287)  
-• $geoNear (page 276)    
-<!--more-->
+• $geoNear (page 276)    <!--more-->
 
 和SQL的对应关系：  
 WHERE $match (page 281)  
