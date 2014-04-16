@@ -4,13 +4,13 @@ title: "Spring Cache之Ehcache和Memcached"
 date: 2014-04-15 14:52:05 +0800
 comments: true
 categories: tech spring-cache
-keywords: Spring Cache Ehcache Memcached
-tags: Spring Ehcache Memcached
-description: Spring Cache Ehcache Memcached
+keywords: Spring Cache Ehcache Memcached LinkedHashMap
+tags: Spring Ehcache Memcached LinkedHashMap
+description: Spring Cache Ehcache Memcached LinkedHashMap
 ---
-spring框架从3.1版本开始提供了缓存支持：在spring-context.jar里的org.springframework.cache包，以及spring-context-support.jar里的org.springframework.cache包；而且提供了基于ConcurrentHashMap、JCacheCache、EhCache、GuavaCache的实现。这里我们先看下基于EhCache的使用，然后考虑集成Memcached；版本：spring3.2和spring4，EhCache2.7，spyMemcached2.8  
+spring框架从3.1版本开始提供了缓存支持：在spring-context.jar里的org.springframework.cache包，以及spring-context-support.jar里的org.springframework.cache包；而且提供了基于ConcurrentHashMap、JCacheCache、EhCache、GuavaCache的实现。这里我们先看下基于EhCache的使用，然后考虑集成Memcached；版本：spring3.2和spring4，EhCache2.7，spyMemcached2.8；内容还涉及HashMap、LinkedHashMap、synchronizedMap、ConcurrentHashMap、ReentrantLock……  
 [查阅spring 4.0.x reference](http://docs.spring.io/spring/docs/4.0.x/spring-framework-reference/html/cache.html)  
-
+<!--more-->
 一、EhCache配置  
 ----
 ###1. 添加相关jar，添加ehcache.xml  
@@ -69,6 +69,9 @@ spring框架从3.1版本开始提供了缓存支持：在spring-context.jar里�
 ```java  
 public class Notice implements Serializable {
 ```
+
+标签：[技术](/blog/categories/tech)  
+
 这样ehcache集成完了，get方法对同一条记录只从数据库查询一次，cache是成功的，但search方法却一直读库，这里没有设置cache的key，设置的话如果是固定的，那么每次结果集都一样，不会更新；文档说不设key，将使用默认key生成器DefaultKeyGenerator：  
 ```java  
 public class DefaultKeyGenerator implements KeyGenerator {
@@ -176,6 +179,7 @@ memcached.failureMode=Redistribute
 memcached.useNagleAlgorithm=false
 ```
 
+标签：[技术](/blog/categories/tech)  
 ####2. 实现MemcachedCacheManager和MemcachedCache
 参考ehcache的源码（org.springframework.cache.ehcache包里）：EhCacheCache和EhCacheCacheManager，manager用来获取cache，重写了getCache和loadCaches方法，这样配置在ehcache.xml里的cache name都会实例化成每个EhCacheCache，当执行到@Cacheable的方法上，就会调用getCache(name)获取cache，再根据key取得value；  
 
