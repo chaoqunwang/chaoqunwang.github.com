@@ -96,7 +96,7 @@ public class DefaultKeyGenerator implements KeyGenerator {
 }
 ```
 ***问题***就在于object.hashCode()，看方法的参数string没问题，date没问题，Integer数组使用的就是Object类的hashCode是个内存地址，每次执行都变，要改用Arrays.hashCode(array)才不会变；  
-当然，分页类page也要重写hashCode；顺便说下，apache的commons-lang.jar提供了EqualsBuilder、HashCodeBuilder、ToStringBuilder可用于重写各方法。
+当然，分页类page也要重写hashCode；顺便说下，apache的commons-lang.jar提供了EqualsBuilder、HashCodeBuilder、ToStringBuilder可用于重写各方法。还要***注意***：分页列表不仅要缓存list，还要缓存分页信息，这样到前端才会分页，否则是不知道这个list是多少页的，故方法的返回值（上面search方法只返回list是不行的）可采用类似```org.springframework.data.domain.Page```内部包含结果集  
 ####4. 自定义key生成器  
 解决上面问题：重写生成器（继承DefaultKeyGenerator，需要注意的是对于param是list,set,map取hashcode，其泛型类也要重写hashCode方法）并配置:  
 ```
@@ -107,17 +107,14 @@ public class DefaultKeyGenerator implements KeyGenerator {
 public class CustomKeyGenerator extends DefaultKeyGenerator {
 	public Object generate(Object target, Method method, Object... params) {
 		StringBuffer buffer = new StringBuffer();
-		buffer.append(target.getClass().getName());
-		buffer.append(".");
-		buffer.append(method.getName());
-		buffer.append(".");
+		buffer.append(target.getClass().getName()).append(".");
+		buffer.append(method.getName()).append(".");
 		if (params.length > 0) {
 			for (Object each : params) {
 				if (each != null) {
-					if (each instanceof AtomicInteger || each instanceof AtomicLong || each instanceof BigDecimal
-							|| each instanceof BigInteger || each instanceof Byte || each instanceof Double
-							|| each instanceof Float || each instanceof Integer || each instanceof Long
-							|| each instanceof Short) {
+					if (each instanceof Boolean || each instanceof Character || each instanceof Void
+							|| each instanceof Short || each instanceof Byte || each instanceof Double
+							|| each instanceof Float || each instanceof Integer || each instanceof Long) {
 						buffer.append(each);
 					} else if (each instanceof Object[]) {
 						buffer.append(Arrays.hashCode((Object[]) each));
@@ -411,8 +408,46 @@ public class MapTest {
 }
 ```
 
-####4. 测试Spring 4.0.x Cache  
-以上3.2.x使用正常，4.0版本改动了key生成器，所以测试下  
+####4. Spring 4.0.x Cache  
+以上3.2.x使用正常，4.0版本改动了key生成器，源码也很简单：SimpleKeyGenerator和SimpleKey，toString方法将参数转为字符串，嫌长就使用hashCode  
+```java
+public class SimpleKeyGenerator implements KeyGenerator {
+	@Override
+	public Object generate(Object target, Method method, Object... params) {
+		if (params.length == 0) {
+			return SimpleKey.EMPTY;
+		}
+		if (params.length == 1 && params[0] != null) {
+			return params[0];
+		}
+		return new SimpleKey(params);
+	}
+}
+public final class SimpleKey implements Serializable {
+	public static final SimpleKey EMPTY = new SimpleKey();
+	private final Object[] params;
 
-未完待续
+	/**
+	 * Create a new {@link SimpleKey} instance.
+	 * @param elements the elements of the key
+	 */
+	public SimpleKey(Object... elements) {
+		Assert.notNull(elements, "Elements must not be null");
+		this.params = new Object[elements.length];
+		System.arraycopy(elements, 0, this.params, 0, elements.length);
+	}
+
+	public boolean equals(Object obj) {
+		return (this == obj || (obj instanceof SimpleKey && Arrays.equals(this.params, ((SimpleKey) obj).params)));
+	}
+
+	public int hashCode() {
+		return Arrays.hashCode(this.params);
+	}
+
+	public String toString() {
+		return "SimpleKey [" + StringUtils.arrayToCommaDelimitedString(this.params) + "]";
+	}
+}
+```
 
