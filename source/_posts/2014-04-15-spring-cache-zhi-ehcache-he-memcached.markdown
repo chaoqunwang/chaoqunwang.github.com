@@ -9,7 +9,7 @@ tags: Spring Ehcache Memcached HashMap
 description: Spring Cache Ehcache Memcached HashMap LinkedHashMap synchronizedMap ConcurrentHashMap
 ---
 spring框架从3.1版本开始提供了缓存支持：在spring-context.jar里的org.springframework.cache包，以及spring-context-support.jar里的org.springframework.cache包；而且提供了基于ConcurrentHashMap、JCacheCache、EhCache、GuavaCache的实现。  
-这里我们先看下基于EhCache的使用，然后考虑集成Memcached；版本：spring3.2和spring4，EhCache2.7，spyMemcached2.8；  
+这里我们先看下基于EhCache的使用，然后考虑<a href="#memcached">集成Memcached</a>；版本：spring3.2和spring4，EhCache2.7，spyMemcached2.8；  
 内容还涉及HashMap、LinkedHashMap、synchronizedMap、ConcurrentHashMap、ReentrantLock……    
 [参考资料：spring framework 4.0.x reference](http://docs.spring.io/spring/docs/4.0.x/spring-framework-reference/html/cache.html)<!--more-->  
 
@@ -140,7 +140,7 @@ public class CustomKeyGenerator extends DefaultKeyGenerator {
 
 还有一个**注意事项**：因其使用aop的动态代理，对于内部调用无效，例如publish方法没加cache注解，内部调用update方法（加了@CachePut）更新状态值，但cache不会更新；controller调用service方法可以，controller方法也可以加，但如果参数有request，每次都变，所以没用，一般加在service方法上。
 
-二、集成Memcached  
+二、<a name="memcached">集成Memcached</a>  
 ----
 背景：现在的项目使用memcached做缓存，基本上是编码式的，在需要的时候，生成key，将value转为json再set到缓存，因此打算使用注解式更优雅的处理，就需要实现spring cache的相关接口和自定义一些方法  
 ####1. spring集成Memcached，使用spyMemcached  
