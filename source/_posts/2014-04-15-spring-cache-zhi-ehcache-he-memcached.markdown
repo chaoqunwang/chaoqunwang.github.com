@@ -95,8 +95,8 @@ public class DefaultKeyGenerator implements KeyGenerator {
 	}
 }
 ```
-***问题***就在于object.hashCode()，看方法的参数string没问题，date没问题，Integer数组使用的就是Object类的hashCode是个内存地址，每次执行都变，要改用Arrays.hashCode(array)才不会变；  
-当然，分页类page也要重写hashCode；顺便说下，apache的commons-lang.jar提供了EqualsBuilder、HashCodeBuilder、ToStringBuilder可用于重写各方法。还要***注意***：分页列表不仅要缓存list，还要缓存分页信息，这样到前端才会分页，否则是不知道这个list是多少页的，故方法的返回值（上面search方法只返回list是不行的）可采用类似```org.springframework.data.domain.Page```内部包含结果集  
+**问题**就在于object.hashCode()，看方法的参数string没问题，date没问题，Integer数组使用的就是Object类的hashCode是个内存地址，每次执行都变，要改用Arrays.hashCode(array)才不会变；  
+当然，分页类page也要重写hashCode；顺便说下，apache的commons-lang.jar提供了EqualsBuilder、HashCodeBuilder、ToStringBuilder可用于重写各方法。还要**注意**：分页列表不仅要缓存list，还要缓存分页信息，这样到前端才会分页，否则是不知道这个list是多少页的，故方法的返回值（上面search方法只返回list是不行的）可采用类似```org.springframework.data.domain.Page```内部包含结果集  
 ####4. 自定义key生成器  
 解决上面问题：重写生成器（继承DefaultKeyGenerator，需要注意的是对于param是list,set,map取hashcode，其泛型类也要重写hashCode方法）并配置:  
 ```
@@ -136,7 +136,7 @@ public class CustomKeyGenerator extends DefaultKeyGenerator {
 
 显然@Cacheable是缓存，@CacheEvict是擦除，@CachePut相当于擦除后再缓存，对于key是确定的很好，比如getById(id)，update(obj)，其key可以用id，obj.id；update时也可以用@CachePut，要注意update方法要返回更新后的obj，void不行。  
 
-问题又出现了：不明确的key如何更新？例如search，当新添加一条记录后，就不能使用@CacheEvict(value="notice_cache", key="?")，因为取不到key，也不能模糊匹配；这种情况下只能使用@CacheEvict(value = "notice_cache", allEntries = true)，将notice_cache所有的缓存擦除，多少有点粗糙（在后面使用memcached我实现了一种方法能够精细擦除）  
+**问题**又出现了：不明确的key如何更新？例如search，当新添加一条记录后，就不能使用@CacheEvict(value="notice_cache", key="?")，因为取不到key，也不能模糊匹配；这种情况下只能使用@CacheEvict(value = "notice_cache", allEntries = true)，将notice_cache所有的缓存擦除，多少有点粗糙，而memcached甚至没有某个cache的removeAll，这就要自己写个MemcachedCache  
 
 还有一个**注意事项**：因其使用aop的动态代理，对于内部调用无效，例如publish方法没加cache注解，内部调用update方法（加了@CachePut）更新状态值，但cache不会更新；controller调用service方法可以，controller方法也可以加，但如果参数有request，每次都变，所以没用，一般加在service方法上。
 
@@ -182,7 +182,7 @@ memcached.useNagleAlgorithm=false
 ####2. 实现MemcachedCacheManager和MemcachedCache
 参考ehcache的源码（org.springframework.cache.ehcache包里）：EhCacheCache和EhCacheCacheManager，manager用来获取cache，重写了getCache和loadCaches方法，这样配置在ehcache.xml里的cache name都会实例化成每个EhCacheCache，当执行到@Cacheable的方法上，就会调用getCache(name)获取cache，再根据key取得value；   
 
-***MemcachedCacheManager***：   
+**MemcachedCacheManager**：   
 ```java 
 public class MemcachedCacheManager extends AbstractCacheManager {
 	// cache集合
@@ -221,7 +221,7 @@ public class MemcachedCacheManager extends AbstractCacheManager {
 }
 ```
 这样应用启动时实例化manager，在执行加缓存注解的的方法时，会调用getCache(获取或新建cache)，根据缓存的key从cache中取值（没有就读库，然后将结果加入cache，下次相同的key就能取到缓存的值了）  
-要写MemcachedCache实现```org.springframework.cache.Cache```接口，先来分析***EhCacheCache***： 
+要写MemcachedCache实现```org.springframework.cache.Cache```接口，先来分析**EhCacheCache**： 
 ```java
 public class EhCacheCache implements Cache {
 	// 使用Ehcache的cache，来做get,put,evict...，集成memcached就要使用memcachedClient
@@ -265,14 +265,14 @@ public class EhCacheCache implements Cache {
 	}
 }
 ```
-好了，来写memcachedCache，***问题来了***：  
+好了，来写memcachedCache，**问题来了**：  
 1.clear方法，spy的client没有removeAll，clear之类的方法，有个flush是全部清空，服务器N多个cache都会擦掉  
 2.@CacheEvict(value = "notice_cache", allEntries = true)就是用的clear，“添加个notice都要清掉其他非notice_cache缓存”就很可怕，能不能根据cache名称清除呢？
-3.上面两个实际是一个问题，memcached是key-value存储，所以要对key进行分组，采用一个集合保存key，然后将实际的key-value存入  
+3.上面两个实际是一个问题，memcached是key-value存储，所以要对key进行分组，采用一个集合保存key，然后将实际的key-value存入；如果想**模糊匹配**也是可行的，需要在此基础上做修改：key就得用字符串而不是字符串的hashCode了，或者自定义注解  
 常用的集合数据类型如list，map，set它也支持，考虑到key的字符限制和单个value不超过1MB，使用一个set存储一个cache里所有的key能达到2万以上(看key的字节数)，使用压缩存储的更多，同时使用LRU（如LinkedHashMap，将过期的或长期不用的移除），基本满足使用  
 标签：[memcached](/blog/categories/memcached)  
 
-***MemcachedCache***：
+**MemcachedCache**：
 ```java
 public class MemcachedCache implements Cache {
 	// 单个cache存储的key最大数量
@@ -348,7 +348,7 @@ public class MemcachedCache implements Cache {
 ```
 这里keys也可以使用cacheName作为key存入缓存，就需要在put,evict,clear方法里使用```client.replace(name, expire, keys);```保持更新，但好像成本多了，收益不大  
 
-***KeySet***继承LinkedHashMap，为了使用removeEldestEntry，满了移除最旧元素，保持initSize:
+**KeySet**继承LinkedHashMap，为了使用removeEldestEntry，满了移除最旧元素，保持initSize:
 ```java
 public class KeySet extends LinkedHashMap<String, String> {
 	private int max;
@@ -369,7 +369,7 @@ public class KeySet extends LinkedHashMap<String, String> {
 ```
 
 ####3. 线程安全  
-HashSet\HashMap都不是线程安全的，例如[Java HashMap的死循环](http://coolshell.cn/articles/9606.html);  
+因为要存储keys，所以考虑使用哪种集合：HashSet\HashMap都不是线程安全的，例如[Java HashMap的死循环](http://coolshell.cn/articles/9606.html);  
 安全的如Collections.synchronizedMap和ConcurrentHashMap（不允许value为null）；  
 两者的区别是锁不同：synchronizedMap使用对象锁，相当于在方法上声明synchronized；ConcurrentHashMap比较复杂，在segment上加锁，将范围控制的很小，因而并发性能就高；  
 这里使用LinkedHashMap，ConcurrentHashMap不好包装，synchronizedMap效率低，不如加个ReentrantLock，或者使用读写锁ReentrantReadWriteLock(但这篇文章介绍了读写锁可能存在问题：[小心LinkedHashMap的get()方法](http://skydream.iteye.com/blog/1562880))：  
@@ -409,7 +409,7 @@ public class MapTest {
 ```
 
 ####4. Spring 4.0.x Cache  
-以上3.2.x使用正常，4.0版本改动了key生成器，源码也很简单：SimpleKeyGenerator和SimpleKey，toString方法将参数转为字符串，嫌长就使用hashCode  
+以上3.2.x使用正常，4.0版本改动了key生成器，源码也很简单：SimpleKeyGenerator和SimpleKey，toString方法将参数转为字符串，嫌长就改用hashCode  
 ```java
 public class SimpleKeyGenerator implements KeyGenerator {
 	@Override
@@ -451,7 +451,7 @@ public final class SimpleKey implements Serializable {
 }
 ```
 
-***事实上***，对于复杂的，类似Object数组（下面会有），那么无论是上面自定义keyGenerator还是spring4.0的都会有问题（hashCode和toString，不一致就取不到cache，会每次都读库），测试简单数组如下：
+**事实上**，对于复杂的，类似Object数组（下面会有），那么无论是上面自定义keyGenerator还是spring4.0的都会有问题（hashCode和toString，不一致就取不到cache，会每次都读库），测试简单数组如下：
 ```java
 	Integer[] array = new Integer[] { 1, 2, 3 };
 	
@@ -471,7 +471,7 @@ public final class SimpleKey implements Serializable {
 ```
 这个测试Arrays.hashCode(array)和SimpleKey.toString()多次运行是一致的，也就是自定义keyGenerator和SimpleKeyGenerator正确  
 
-***复杂的***：```Object[] mixed = new Object[] { 1, "11", array, list };```  
+**复杂的**：```Object[] mixed = new Object[] { 1, "11", array, list };```  
 ```java
 	List<Integer> list = Lists.newArrayList(array);
 	Object[] mixed = new Object[] { 1, "11", array, list };
@@ -488,7 +488,7 @@ public final class SimpleKey implements Serializable {
 	System.out.println(StringUtils.arrayToCommaDelimitedString(mixed)); // 1,11,[Ljava.lang.Integer;@5f4fcc96,[1, 2, 3]
 	System.out.println(StringUtils.arrayToCommaDelimitedString(mixed).hashCode()); // 572153479
 ```
-***结论***：多次运行发现只有Arrays.deepToString和Arrays.deepHashCode是一致的，也就是对每个元素，如果是数组再递归;同理，如果是集合list,set,map之类，最好使用泛型，类型一致，不要混合
+**结论**：多次运行发现只有Arrays.deepToString和Arrays.deepHashCode是一致的，也就是对每个元素，如果是数组再递归;同理，如果是集合list,set,map之类，最好使用泛型，类型一致，不要混合
 
 三、总结  
 ----
