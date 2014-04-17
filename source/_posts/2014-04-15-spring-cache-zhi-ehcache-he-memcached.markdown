@@ -117,9 +117,9 @@ public class CustomKeyGenerator extends DefaultKeyGenerator {
 							|| each instanceof Float || each instanceof Integer || each instanceof Long) {
 						buffer.append(each);
 					} else if (each instanceof Object[]) {
-						buffer.append(Arrays.hashCode((Object[]) each));
+						buffer.append(Arrays.hashCode((Object[]) each)); // 后面会说到可替换Arrays.deepHashCode
 					} else {
-						buffer.append(each.hashCode());
+						buffer.append(each.hashCode()); // list,map,set其内的元素类型一直才好
 					}
 				} else {
 					buffer.append(NO_PARAM_KEY);
@@ -450,4 +450,42 @@ public final class SimpleKey implements Serializable {
 	}
 }
 ```
+
+***事实上***，对于复杂的，类似Object数组（下面会有），那么无论是上面自定义keyGenerator还是spring4.0的都会有问题（hashCode和toString，不一致就取不到cache，会每次都读库），测试如下：
+```java
+	Integer[] array = new Integer[] { 1, 2, 3 };
+	
+	System.out.println(array); // [Ljava.lang.Integer;@5f4fcc96
+	System.out.println(ObjectUtils.nullSafeToString(array)); // {1, 2, 3} 
+	System.out.println(Arrays.toString(array)); // [1, 2, 3]
+	System.out.println(Arrays.deepToString(array)); // [1, 2, 3]
+
+	System.out.println(array.hashCode()); // 1599065238
+	System.out.println(Arrays.hashCode(array)); // 30817 
+	System.out.println(Arrays.deepHashCode(array)); // 30817
+	System.out.println(Arrays.toString(array).hashCode()); // -412129978
+	
+	// StringUtils是spring的：org.springframework.util.StringUtils
+	System.out.println(StringUtils.arrayToCommaDelimitedString(array)); // 1,2,3
+	System.out.println(StringUtils.arrayToCommaDelimitedString(array).hashCode()); //46612798
+```
+这个测试Arrays.hashCode(array)和SimpleKey.toString()多次运行是一致的，也就是自定义keyGenerator和SimpleKeyGenerator正确  
+***复杂的***：```Object[] mixed = new Object[] { 1, "11", array, list };```  
+```java
+	List<Integer> list = Lists.newArrayList(array);
+	Object[] mixed = new Object[] { 1, "11", array, list };
+	System.out.println(mixed); // [Ljava.lang.Object;@549f9afb
+	System.out.println(ObjectUtils.nullSafeToString(mixed)); // {1, 11, [Ljava.lang.Integer;@5f4fcc96, [1, 2, 3]}
+	System.out.println(Arrays.toString(mixed)); // [1, 11, [Ljava.lang.Integer;@5f4fcc96, [1, 2, 3]]
+	System.out.println(Arrays.deepToString(mixed)); // [1, 11, [1, 2, 3], [1, 2, 3]]
+
+	System.out.println(mixed.hashCode()); // 1419746043
+	System.out.println(Arrays.hashCode(mixed)); // -1966094197
+	System.out.println(Arrays.deepHashCode(mixed)); // 3446304
+	System.out.println(Arrays.toString(mixed).hashCode()); // -691776533
+
+	System.out.println(StringUtils.arrayToCommaDelimitedString(mixed)); // 1,11,[Ljava.lang.Integer;@5f4fcc96,[1, 2, 3]
+	System.out.println(StringUtils.arrayToCommaDelimitedString(mixed).hashCode()); // 572153479
+```
+***结论***：多次运行发现只有Arrays.deepToString和Arrays.deepHashCode是一致的，也就是对每个元素，如果是数组再递归;同理，如果是集合list,set,map之类，最好使用泛型，类型一致，不要混合
 
