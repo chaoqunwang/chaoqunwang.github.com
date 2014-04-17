@@ -451,7 +451,7 @@ public final class SimpleKey implements Serializable {
 }
 ```
 
-***事实上***，对于复杂的，类似Object数组（下面会有），那么无论是上面自定义keyGenerator还是spring4.0的都会有问题（hashCode和toString，不一致就取不到cache，会每次都读库），测试如下：
+***事实上***，对于复杂的，类似Object数组（下面会有），那么无论是上面自定义keyGenerator还是spring4.0的都会有问题（hashCode和toString，不一致就取不到cache，会每次都读库），测试简单数组如下：
 ```java
 	Integer[] array = new Integer[] { 1, 2, 3 };
 	
@@ -470,6 +470,7 @@ public final class SimpleKey implements Serializable {
 	System.out.println(StringUtils.arrayToCommaDelimitedString(array).hashCode()); //46612798
 ```
 这个测试Arrays.hashCode(array)和SimpleKey.toString()多次运行是一致的，也就是自定义keyGenerator和SimpleKeyGenerator正确  
+
 ***复杂的***：```Object[] mixed = new Object[] { 1, "11", array, list };```  
 ```java
 	List<Integer> list = Lists.newArrayList(array);
@@ -488,4 +489,13 @@ public final class SimpleKey implements Serializable {
 	System.out.println(StringUtils.arrayToCommaDelimitedString(mixed).hashCode()); // 572153479
 ```
 ***结论***：多次运行发现只有Arrays.deepToString和Arrays.deepHashCode是一致的，也就是对每个元素，如果是数组再递归;同理，如果是集合list,set,map之类，最好使用泛型，类型一致，不要混合
+
+三、总结  
+----
+spring cache用好要注意很多：  
+1、搞清各注解意义和使用时机，逻辑正确，更新一致  
+2、缓存key的使用很重要，自定义key要考虑参数的hashCode和toString  
+3、返回结果如分页结果集，不仅要有list还要有page  
+4、可虑清楚并测试加了Cacheable确实生效？  
+5、效益最大化：使用多注解多缓存的情景，一次方法执行缓存多个信息（要更新时也得多个更新，才能保持一致）  
 
