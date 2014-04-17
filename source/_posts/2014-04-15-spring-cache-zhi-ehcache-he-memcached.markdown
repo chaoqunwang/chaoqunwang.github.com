@@ -9,7 +9,7 @@ tags: Spring Ehcache Memcached HashMap
 description: Spring Cache Ehcache Memcached HashMap LinkedHashMap synchronizedMap ConcurrentHashMap
 ---
 spring框架从3.1版本开始提供了缓存支持：在spring-context.jar里的org.springframework.cache包，以及spring-context-support.jar里的org.springframework.cache包；而且提供了基于ConcurrentHashMap、JCacheCache、EhCache、GuavaCache的实现。  
-这里我们先看下基于EhCache的使用，然后考虑<a href="#memcached">集成Memcached</a>；版本：spring3.2和spring4，EhCache2.7，spyMemcached2.8；  
+这里我们先看下基于EhCache的使用，然后考虑<a target=_self href="/blog/2014/04/spring-cache-zhi-ehcache-he-memcached.html/#memcached">集成Memcached</a>；版本：spring3.2和spring4，EhCache2.7，spyMemcached2.8；  
 内容还涉及HashMap、LinkedHashMap、synchronizedMap、ConcurrentHashMap、ReentrantLock……    
 [参考资料：spring framework 4.0.x reference](http://docs.spring.io/spring/docs/4.0.x/spring-framework-reference/html/cache.html)<!--more-->  
 
@@ -267,8 +267,9 @@ public class EhCacheCache implements Cache {
 ```
 好了，来写memcachedCache，**问题来了**：  
 1.clear方法，spy的client没有removeAll，clear之类的方法，有个flush是全部清空，服务器N多个cache都会擦掉  
-2.@CacheEvict(value = "notice_cache", allEntries = true)就是用的clear，“添加个notice都要清掉其他非notice_cache缓存”就很可怕，能不能根据cache名称清除呢？
+2.@CacheEvict(value = "notice_cache", allEntries = true)就是用的clear，“添加个notice都要清掉其他非notice_cache缓存”就很可怕，能不能根据cache名称清除呢？  
 3.上面两个实际是一个问题，memcached是key-value存储，所以要对key进行分组，采用一个集合保存key，然后将实际的key-value存入；如果想**模糊匹配**也是可行的，需要在此基础上做修改：key就得用字符串而不是字符串的hashCode了，或者自定义注解  
+
 常用的集合数据类型如list，map，set它也支持，考虑到key的字符限制和单个value不超过1MB，使用一个set存储一个cache里所有的key能达到2万以上(看key的字节数)，使用压缩存储的更多，同时使用LRU（如LinkedHashMap，将过期的或长期不用的移除），基本满足使用  
 标签：[memcached](/blog/categories/memcached)  
 
