@@ -347,8 +347,7 @@ public class MemcachedCache implements Cache {
 	}
 }
 ```
-这里keys也可以使用cacheName作为key存入缓存，就需要在put,evict,clear方法里使用  
-```client.replace(name, expire, keys);``` 保持更新，但好像成本多了，收益不大  
+这里keys也可以使用cacheName作为key存入缓存，就需要在put,evict,clear方法里使用```client.replace(name, expire, keys);```保持更新  
 
 **KeySet**继承LinkedHashMap，为了使用removeEldestEntry，满了移除最旧元素，保持initSize:
 ```java
