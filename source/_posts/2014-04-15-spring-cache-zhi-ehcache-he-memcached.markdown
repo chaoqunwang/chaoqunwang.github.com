@@ -138,7 +138,7 @@ public class CustomKeyGenerator extends DefaultKeyGenerator {
 
 **问题**又出现了：不明确的key如何更新？例如search，当新添加一条记录后，就不能使用@CacheEvict(value="notice_cache", key="?")，因为取不到key，也不能模糊匹配；这种情况下只能使用@CacheEvict(value = "notice_cache", allEntries = true)，将notice_cache所有的缓存擦除，多少有点粗糙，而memcached甚至没有某个cache的removeAll，这就要自己写个MemcachedCache  
 
-还有一个**注意事项**：因其使用aop的动态代理，对于内部调用无效，例如publish方法没加cache注解，内部调用update方法（加了@CachePut）更新状态值，但cache不会更新；controller调用service方法可以，controller方法也可以加，但如果参数有request，每次都变，所以没用，一般加在service方法上。
+通常注解使用在service方法上，还有一个**注意事项**：因其使用aop的动态代理，对于内部调用无效，例如publish方法没加注解，内部调用update方法（加了@CachePut）更新状态值，但cache不会更新；controller方法（不加注解）调用service方法（加了注解）是可以；当然controller方法也可以加，需要单独处理，因为参数若有request、response之类，每次请求都变，就要在keyGenerator里做过滤了。  
 
 二、<a name="memcached">集成Memcached</a>  
 ----
@@ -342,16 +342,19 @@ public class MemcachedCache implements Cache {
 		this.client = client;
 	}
 	
-	public Map<String, String> getKeys() {
+	public KeySet getKeys() {
 		return this.keys;
 	}
 }
 ```
-这里keys也可以使用cacheName作为key存入缓存，就需要在put,evict,clear方法里使用```client.replace(name, expire, keys);```保持更新，但好像成本多了，收益不大  
+这里keys也可以使用cacheName作为key存入缓存，就需要在put,evict,clear方法里使用  
+```client.replace(name, expire, keys);``` 保持更新，但好像成本多了，收益不大  
 
 **KeySet**继承LinkedHashMap，为了使用removeEldestEntry，满了移除最旧元素，保持initSize:
 ```java
-public class KeySet extends LinkedHashMap<String, String> {
+static class KeySet extends LinkedHashMap<String, String> implements Serializable {
+	private static final long serialVersionUID = 1L;
+	private static final String PRESENT = new String();
 	private int max;
 
 	public KeySet(int initSize) {
@@ -360,7 +363,7 @@ public class KeySet extends LinkedHashMap<String, String> {
 	}
 
 	public void add(String key) {
-		super.put(key, null);
+		super.put(key, PRESENT);
 	}
 
 	public boolean removeEldestEntry(Map.Entry<String, String> eldest) {
@@ -495,7 +498,7 @@ public final class SimpleKey implements Serializable {
 ----
 spring cache用好要注意很多：  
 1、搞清各注解意义和使用时机，逻辑正确，更新一致  
-2、缓存key的使用很重要，自定义key要考虑参数的hashCode和toString  
+2、缓存key的使用很重要，自定义key要考虑参数重写hashCode和toString  
 3、返回结果如分页结果集，不仅要有list还要有page  
 4、可虑清楚并测试加了Cacheable确实生效？  
 5、效益最大化：使用多注解多缓存的情景，一次方法执行缓存多个信息（要更新时也得多个更新，才能保持一致）  
