@@ -118,6 +118,8 @@ public class CustomKeyGenerator extends DefaultKeyGenerator {
 						buffer.append(each);
 					} else if (each instanceof Object[]) {
 						buffer.append(Arrays.hashCode((Object[]) each)); // 后面会说到可替换Arrays.deepHashCode
+					} else if (each instanceof HttpServletRequest || each instanceof HttpServletResponse) {
+						continue;
 					} else {
 						buffer.append(each.hashCode()); // list,map,set其内的元素类型一直才好
 					}
@@ -185,8 +187,6 @@ memcached.useNagleAlgorithm=false
 **MemcachedCacheManager**：   
 ```java 
 public class MemcachedCacheManager extends AbstractCacheManager {
-	// cache集合
-	private Collection<Cache> caches;
 	// 注入memcachedClient（后面会有配置）
 	private MemcachedClient client;
 
@@ -200,13 +200,12 @@ public class MemcachedCacheManager extends AbstractCacheManager {
 		this.client = client;
 	}
 	
-	// AbstractCacheManager不允许loadCaches返回空，所以初始化时添加一个默认cache
+	// AbstractCacheManager.afterPropertiesSet不允许loadCaches返回空，所以覆盖掉
+	public void afterPropertiesSet() {
+	}
+
 	protected Collection<? extends Cache> loadCaches() {
-		if (caches == null) {
-			caches = new LinkedHashSet<Cache>();
-			caches.add(new MemcachedCache("DEFAULT_CACHE", client));
-		}
-		return caches;
+		return null;
 	}
 
 	// 根据名称获取cache，对应注解里的value如notice_cache，没有就创建并加入cache管理
@@ -276,8 +275,9 @@ public class EhCacheCache implements Cache {
 **MemcachedCache**：
 ```java
 public class MemcachedCache implements Cache {
+	private static final String PRESENT = new String();
 	// 单个cache存储的key最大数量
-	private static final int maxElement = 10000;
+	private static final int maxElements = 10000;
 	// 默认过期时间10天
 	private static final int expire = 10 * 24 * 60 * 60;
 	private String name;
@@ -289,8 +289,8 @@ public class MemcachedCache implements Cache {
 
 	public MemcachedCache(String name, MemcachedClient client) {
 		this.name = name;
-		this.keys = new KeySet(maxElement);
 		this.client = client;
+		this.keys = new KeySet(maxElements);
 	}
 
 	public String getName() {
@@ -313,7 +313,7 @@ public class MemcachedCache implements Cache {
 	// 将ckey加入key集合并将ckey-value存入缓存
 	public void put(Object key, Object value) {
 		String ckey = toStringWithCacheName(key);
-		keys.add(ckey);
+		keys.put(ckey, PRESENT);
 		client.set(ckey, expire, value);
 	}
 	// 从keys集合清除ckey，并从缓存清除
@@ -351,22 +351,24 @@ public class MemcachedCache implements Cache {
 
 **KeySet**继承LinkedHashMap，为了使用removeEldestEntry，满了移除最旧元素，保持initSize:
 ```java
-static class KeySet extends LinkedHashMap<String, String> implements Serializable {
+/**
+ * 用于存储keys，容量到达上限移除最旧的，缓存也移除
+ */
+class KeySet extends LinkedHashMap<String, String> {
 	private static final long serialVersionUID = 1L;
-	private static final String PRESENT = new String();
-	private int max;
+	private int maxSize;
 
 	public KeySet(int initSize) {
 		super(initSize, 0.75F, true);
-		this.max = initSize;
-	}
-
-	public void add(String key) {
-		super.put(key, PRESENT);
+		this.maxSize = initSize;
 	}
 
 	public boolean removeEldestEntry(Map.Entry<String, String> eldest) {
-		return size() > this.max;
+		boolean overflow = size() > this.maxSize;
+		if (overflow) {
+			MemcachedCache.this.client.delete(eldest.getKey());
+		}
+		return overflow;
 	}
 }
 ```
