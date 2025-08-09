@@ -52,24 +52,6 @@
 </head>
 
 <body class="font-inter bg-gray-50 text-gray-800 min-h-screen">
-    <!-- 顶部导航 -->
-    <header class="bg-white shadow-sm sticky top-0 z-50 transition-custom">
-        <div class="container mx-auto px-4 py-4 flex justify-between items-center">
-            <div class="flex items-center space-x-2">
-                <i class="fa fa-home text-primary text-2xl"></i>
-                <h1 class="text-xl md:text-2xl font-bold text-gray-800">二手房价格评估工具</h1>
-            </div>
-            <div class="flex items-center space-x-4">
-                <button id="theme-toggle" class="p-2 rounded-full hover:bg-gray-100 transition-custom">
-                    <i class="fa fa-moon-o text-gray-600"></i>
-                </button>
-                <button id="help-btn" class="p-2 rounded-full hover:bg-gray-100 transition-custom">
-                    <i class="fa fa-question text-gray-600"></i>
-                </button>
-            </div>
-        </div>
-    </header>
-
     <!-- 主内容区 -->
     <main class="container mx-auto px-4 py-8">
         <!-- 数据可视化区域 -->
@@ -94,7 +76,7 @@
                 </div>
             </div>
         </div>
-        
+
         <!-- 控制面板 -->
         <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
             <div class="text-lg font-semibold text-gray-700">房源对比列表</div>
@@ -143,11 +125,13 @@
                                     class="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-custom">
                             </td>
                             <td class="px-4 py-3">
-                                <input type="number" id="building-area-1" name="building-area-1" step="0.1" placeholder="0.0"
+                                <input type="number" id="building-area-1" name="building-area-1" step="0.1"
+                                    placeholder="0.0"
                                     class="w-full p-2 border border-gray-300 rounded-md text-right focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-custom building-area">
                             </td>
                             <td class="px-4 py-3">
-                                <input type="number" id="inside-area-1" name="inside-area-1" step="0.1" placeholder="0.0"
+                                <input type="number" id="inside-area-1" name="inside-area-1" step="0.1"
+                                    placeholder="0.0"
                                     class="w-full p-2 border border-gray-300 rounded-md text-right focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-custom inside-area">
                             </td>
                             <td class="px-4 py-3 text-right font-medium text-gray-700 rate">-</td>
@@ -157,35 +141,43 @@
                                     class="w-full p-2 border border-gray-300 rounded-md text-right focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-custom base-price">
                             </td>
                             <td class="px-4 py-3">
-                                <input type="number" id="adjustment-地段-1" name="adjustment-地段-1" step="0.1" placeholder="±0.0"
+                                <input type="number" id="adjustment-地段-1" name="adjustment-地段-1" step="0.1"
+                                    placeholder="±0.0"
                                     class="w-full p-2 border border-gray-300 rounded-md text-right focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-custom adjustment地段">
                             </td>
                             <td class="px-4 py-3">
-                                <input type="number" id="adjustment-学区-1" name="adjustment-学区-1" step="0.1" placeholder="±0.0"
+                                <input type="number" id="adjustment-学区-1" name="adjustment-学区-1" step="0.1"
+                                    placeholder="±0.0"
                                     class="w-full p-2 border border-gray-300 rounded-md text-right focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-custom adjustment学区">
                             </td>
                             <td class="px-4 py-3">
-                                <input type="number" id="adjustment-商圈-1" name="adjustment-商圈-1" step="0.1" placeholder="±0.0"
+                                <input type="number" id="adjustment-商圈-1" name="adjustment-商圈-1" step="0.1"
+                                    placeholder="±0.0"
                                     class="w-full p-2 border border-gray-300 rounded-md text-right focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-custom adjustment商圈">
                             </td>
                             <td class="px-4 py-3">
-                                <input type="number" id="adjustment-房龄-1" name="adjustment-房龄-1" step="0.1" placeholder="±0.0"
+                                <input type="number" id="adjustment-房龄-1" name="adjustment-房龄-1" step="0.1"
+                                    placeholder="±0.0"
                                     class="w-full p-2 border border-gray-300 rounded-md text-right focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-custom adjustment房龄">
                             </td>
                             <td class="px-4 py-3">
-                                <input type="number" id="adjustment-交通-1" name="adjustment-交通-1" step="0.1" placeholder="±0.0"
+                                <input type="number" id="adjustment-交通-1" name="adjustment-交通-1" step="0.1"
+                                    placeholder="±0.0"
                                     class="w-full p-2 border border-gray-300 rounded-md text-right focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-custom adjustment交通">
                             </td>
                             <td class="px-4 py-3">
-                                <input type="number" id="adjustment-户型-1" name="adjustment-户型-1" step="0.1" placeholder="±0.0"
+                                <input type="number" id="adjustment-户型-1" name="adjustment-户型-1" step="0.1"
+                                    placeholder="±0.0"
                                     class="w-full p-2 border border-gray-300 rounded-md text-right focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-custom adjustment户型">
                             </td>
                             <td class="px-4 py-3">
-                                <input type="number" id="adjustment-楼层-1" name="adjustment-楼层-1" step="0.1" placeholder="±0.0"
+                                <input type="number" id="adjustment-楼层-1" name="adjustment-楼层-1" step="0.1"
+                                    placeholder="±0.0"
                                     class="w-full p-2 border border-gray-300 rounded-md text-right focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-custom adjustment楼层">
                             </td>
                             <td class="px-4 py-3">
-                                <input type="number" id="adjustment-装修-1" name="adjustment-装修-1" step="0.1" placeholder="±0.0"
+                                <input type="number" id="adjustment-装修-1" name="adjustment-装修-1" step="0.1"
+                                    placeholder="±0.0"
                                     class="w-full p-2 border border-gray-300 rounded-md text-right focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-custom adjustment装修">
                             </td>
                             <td class="px-4 py-3 text-center">
@@ -560,45 +552,20 @@
             // 清空按钮
             document.getElementById('clear-all').addEventListener('click', clearAll);
 
-            // 帮助按钮和模态框
-            const helpBtn = document.getElementById('help-btn');
-            const helpModal = document.getElementById('help-modal');
-            const closeHelp = document.getElementById('close-help');
-            const gotIt = document.getElementById('got-it');
-
-            helpBtn.addEventListener('click', () => {
-                helpModal.classList.remove('hidden');
-                document.body.style.overflow = 'hidden';
-            });
-
-            const closeHelpModal = () => {
-                helpModal.classList.add('hidden');
-                document.body.style.overflow = '';
-            };
-
-            closeHelp.addEventListener('click', closeHelpModal);
-            gotIt.addEventListener('click', closeHelpModal);
-
-            // 点击模态框外部关闭
-            helpModal.addEventListener('click', (e) => {
-                if (e.target === helpModal) {
-                    closeHelpModal();
-                }
-            });
 
             // 使用事件委托处理所有输入框变化
-            document.getElementById('houses-table-body').addEventListener('input', function(e) {
+            document.getElementById('houses-table-body').addEventListener('input', function (e) {
                 if (e.target.tagName === 'INPUT') {
                     calculateAll();
                 }
             });
 
             // 使用事件委托处理所有删除按钮
-            document.getElementById('houses-table-body').addEventListener('click', function(e) {
+            document.getElementById('houses-table-body').addEventListener('click', function (e) {
                 if (e.target.closest('.delete-house')) {
                     const tableBody = document.getElementById('houses-table-body');
                     const row = e.target.closest('tr');
-                    
+
                     if (tableBody.children.length > 1) {
                         row.remove();
                         calculateAll();
