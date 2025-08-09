@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>二手房价格评估工具</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.8/dist/chart.umd.min.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#165DFF',
+                        secondary: '#36CFC9',
+                        accent: '#722ED1',
+                        neutral: '#F5F7FA',
+                        'neutral-dark': '#4E5969',
+                        success: '#52C41A',
+                        warning: '#FAAD14',
+                        danger: '#FF4D4F',
+                    },
+                    fontFamily: {
+                        inter: ['Inter', 'system-ui', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .content-auto {
+                content-visibility: auto;
+            }
+            .shadow-soft {
+                box-shadow: 0 2px 15px rgba(0, 0, 0, 0.05);
+            }
+            .transition-custom {
+                transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            }
+            .hover-lift {
+                transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+            }
+            .hover-lift:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            }
+        }
+    </style>
+</head>
+
+<body class="font-inter bg-gray-50 text-gray-800 min-h-screen">
+    <!-- 顶部导航 -->
+    <header class="bg-white shadow-sm sticky top-0 z-50 transition-custom">
+        <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+            <div class="flex items-center space-x-2">
+                <i class="fa fa-home text-primary text-2xl"></i>
+                <h1 class="text-xl md:text-2xl font-bold text-gray-800">二手房价格评估工具</h1>
+            </div>
+            <div class="flex items-center space-x-4">
+                <button id="theme-toggle" class="p-2 rounded-full hover:bg-gray-100 transition-custom">
+                    <i class="fa fa-moon-o text-gray-600"></i>
+                </button>
+                <button id="help-btn" class="p-2 rounded-full hover:bg-gray-100 transition-custom">
+                    <i class="fa fa-question text-gray-600"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- 主内容区 -->
+    <main class="container mx-auto px-4 py-8">
+        <!-- 介绍卡片 -->
+        <div class="bg-white rounded-xl shadow-soft p-6 mb-8 hover-lift">
+            <h2 class="text-xl font-semibold mb-3 text-primary flex items-center">
+                <i class="fa fa-info-circle mr-2"></i>工具说明
+            </h2>
+            <p class="text-gray-600 mb-4">
+                该工具帮助您比较多个二手房源，通过对不同维度的价格调整，计算出合理的预估总价。
+                请填写房源的基础报价和各项因素的价格调整（正值为加价，负值为减价）。
+            </p>
+            <div class="grid md:grid-cols-3 gap-4 text-sm text-gray-600">
+                <div class="flex items-start">
+                    <i class="fa fa-plus-circle text-success mt-1 mr-2"></i>
+                    <span>正值表示该因素优于市场平均水平，应加价</span>
+                </div>
+                <div class="flex items-start">
+                    <i class="fa fa-minus-circle text-danger mt-1 mr-2"></i>
+                    <span>负值表示该因素劣于市场平均水平，应减价</span>
+                </div>
+                <div class="flex items-start">
+                    <i class="fa fa-calculator text-primary mt-1 mr-2"></i>
+                    <span>预估总价 = 报价 + 各项因素价格调整之和</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 控制面板 -->
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
+            <div class="text-lg font-semibold text-gray-700">房源对比列表</div>
+            <div class="flex space-x-3 w-full md:w-auto">
+                <button id="add-house"
+                    class="bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded-lg flex items-center transition-custom">
+                    <i class="fa fa-plus mr-2"></i>添加房源
+                </button>
+                <button id="clear-all"
+                    class="bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 rounded-lg flex items-center transition-custom">
+                    <i class="fa fa-trash mr-2"></i>清空列表
+                </button>
+            </div>
+        </div>
+
+        <!-- 表格容器 -->
+        <div class="bg-white rounded-xl shadow-soft overflow-hidden mb-8">
+            <div class="overflow-x-auto">
+                <table class="w-full">
+                    <thead>
+                        <tr class="bg-gray-50 border-b border-gray-200">
+                            <th class="px-4 py-3 text-left text-sm font-semibold text-gray-600 w-16">序号</th>
+                            <th class="px-4 py-3 text-left text-sm font-semibold text-gray-600">房源名称</th>
+                            <th class="px-4 py-3 text-right text-sm font-semibold text-gray-600">建筑面积(㎡)</th>
+                            <th class="px-4 py-3 text-right text-sm font-semibold text-gray-600">套内面积(㎡)</th>
+                            <th class="px-4 py-3 text-right text-sm font-semibold text-gray-600">得房率(%)</th>
+                            <th class="px-4 py-3 text-right text-sm font-semibold text-gray-600">预估总价(万元)</th>
+                            <th class="px-4 py-3 text-right text-sm font-semibold text-gray-600">报价(万元)</th>
+                            <th class="px-4 py-3 text-right text-sm font-semibold text-gray-600">地段(万元)</th>
+                            <th class="px-4 py-3 text-right text-sm font-semibold text-gray-600">学区(万元)</th>
+                            <th class="px-4 py-3 text-right text-sm font-semibold text-gray-600">商圈(万元)</th>
+                            <th class="px-4 py-3 text-right text-sm font-semibold text-gray-600">房龄(万元)</th>
+                            <th class="px-4 py-3 text-right text-sm font-semibold text-gray-600">交通(万元)</th>
+                            <th class="px-4 py-3 text-right text-sm font-semibold text-gray-600">户型(万元)</th>
+                            <th class="px-4 py-3 text-right text-sm font-semibold text-gray-600">楼层(万元)</th>
+                            <th class="px-4 py-3 text-right text-sm font-semibold text-gray-600">装修(万元)</th>
+                            <th class="px-4 py-3 text-center text-sm font-semibold text-gray-600 w-16">操作</th>
+                        </tr>
+                    </thead>
+                    <tbody id="houses-table-body">
+                        <!-- 初始房源行 -->
+                        <tr class="border-b border-gray-100 hover:bg-gray-50 transition-custom">
+                            <td class="px-4 py-3 text-sm text-gray-600 house-index">1</td>
+                            <td class="px-4 py-3">
+                                <input type="text" placeholder="例如：阳光小区3栋101"
+                                    class="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-custom">
+                            </td>
+                            <td class="px-4 py-3">
+                                <input type="number" step="0.1" placeholder="0.0"
+                                    class="w-full p-2 border border-gray-300 rounded-md text-right focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-custom building-area">
+                            </td>
+                            <td class="px-4 py-3">
+                                <input type="number" step="0.1" placeholder="0.0"
+                                    class="w-full p-2 border border-gray-300 rounded-md text-right focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-custom inside-area">
+                            </td>
+                            <td class="px-4 py-3 text-right font-medium text-gray-700 rate">-</td>
+                            <td class="px-4 py-3 text-right font-medium text-primary total-price">-</td>
+                            <td class="px-4 py-3">
+                                <input type="number" step="0.1" placeholder="0.0"
+                                    class="w-full p-2 border border-gray-300 rounded-md text-right focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-custom base-price">
+                            </td>
+                            <td class="px-4 py-3">
+                                <input type="number" step="0.1" placeholder="±0.0"
+                                    class="w-full p-2 border border-gray-300 rounded-md text-right focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-custom adjustment地段">
+                            </td>
+                            <td class="px-4 py-3">
+                                <input type="number" step="0.1" placeholder="±0.0"
+                                    class="w-full p-2 border border-gray-300 rounded-md text-right focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-custom adjustment学区">
+                            </td>
+                            <td class="px-4 py-3">
+                                <input type="number" step="0.1" placeholder="±0.0"
+                                    class="w-full p-2 border border-gray-300 rounded-md text-right focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-custom adjustment商圈">
+                            </td>
+                            <td class="px-4 py-3">
+                                <input type="number" step="0.1" placeholder="±0.0"
+                                    class="w-full p-2 border border-gray-300 rounded-md text-right focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-custom adjustment房龄">
+                            </td>
+                            <td class="px-4 py-3">
+                                <input type="number" step="0.1" placeholder="±0.0"
+                                    class="w-full p-2 border border-gray-300 rounded-md text-right focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-custom adjustment交通">
+                            </td>
+                            <td class="px-4 py-3">
+                                <input type="number" step="0.1" placeholder="±0.0"
+                                    class="w-full p-2 border border-gray-300 rounded-md text-right focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-custom adjustment户型">
+                            </td>
+                            <td class="px-4 py-3">
+                                <input type="number" step="0.1" placeholder="±0.0"
+                                    class="w-full p-2 border border-gray-300 rounded-md text-right focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-custom adjustment楼层">
+                            </td>
+                            <td class="px-4 py-3">
+                                <input type="number" step="0.1" placeholder="±0.0"
+                                    class="w-full p-2 border border-gray-300 rounded-md text-right focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-custom adjustment装修">
+                            </td>
+                            <td class="px-4 py-3 text-center">
+                                <button class="delete-house text-gray-500 hover:text-danger p-1 transition-custom">
+                                    <i class="fa fa-times"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- 数据可视化区域 -->
+        <div class="grid md:grid-cols-2 gap-6 mb-8">
+            <!-- 总价对比图表 -->
+            <div class="bg-white rounded-xl shadow-soft p-6 hover-lift">
+                <h3 class="text-lg font-semibold mb-4 text-gray-700 flex items-center">
+                    <i class="fa fa-bar-chart text-primary mr-2"></i>房源总价对比
+                </h3>
+                <div class="h-64">
+                    <canvas id="price-comparison-chart"></canvas>
+                </div>
+            </div>
+
+            <!-- 价格调整分析 -->
+            <div class="bg-white rounded-xl shadow-soft p-6 hover-lift">
+                <h3 class="text-lg font-semibold mb-4 text-gray-700 flex items-center">
+                    <i class="fa fa-pie-chart text-primary mr-2"></i>价格调整分析
+                </h3>
+                <div class="h-64">
+                    <canvas id="adjustments-chart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- 评估指南 -->
+        <div class="bg-white rounded-xl shadow-soft p-6 hover-lift">
+            <h3 class="text-lg font-semibold mb-4 text-gray-700 flex items-center">
+                <i class="fa fa-lightbulb-o text-primary mr-2"></i>价格调整参考指南
+            </h3>
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div class="border border-gray-100 rounded-lg p-4">
+                    <h4 class="font-medium text-gray-800 mb-2">地段调整</h4>
+                    <ul class="text-sm text-gray-600 space-y-1">
+                        <li>• 核心地段：+20%~30%</li>
+                        <li>• 较好地段：+10%~20%</li>
+                        <li>• 一般地段：0%</li>
+                        <li>• 较差地段：-10%~20%</li>
+                    </ul>
+                </div>
+                <div class="border border-gray-100 rounded-lg p-4">
+                    <h4 class="font-medium text-gray-800 mb-2">学区调整</h4>
+                    <ul class="text-sm text-gray-600 space-y-1">
+                        <li>• 优质学区：+20%~40%</li>
+                        <li>• 一般学区：+5%~15%</li>
+                        <li>• 无学区：0%</li>
+                        <li>• 差学区：-5%~-10%</li>
+                    </ul>
+                </div>
+                <div class="border border-gray-100 rounded-lg p-4">
+                    <h4 class="font-medium text-gray-800 mb-2">商圈调整</h4>
+                    <ul class="text-sm text-gray-600 space-y-1">
+                        <li>• 成熟商圈：+10%~20%</li>
+                        <li>• 一般商圈：+3%~10%</li>
+                        <li>• 配套不足：-5%~-15%</li>
+                    </ul>
+                </div>
+                <div class="border border-gray-100 rounded-lg p-4">
+                    <h4 class="font-medium text-gray-800 mb-2">房龄调整</h4>
+                    <ul class="text-sm text-gray-600 space-y-1">
+                        <li>• 5年以内：+5%~10%</li>
+                        <li>• 5-10年：0%~5%</li>
+                        <li>• 10-20年：-5%~-15%</li>
+                        <li>• 20年以上：-15%~-30%</li>
+                    </ul>
+                </div>
+                <div class="border border-gray-100 rounded-lg p-4">
+                    <h4 class="font-medium text-gray-800 mb-2">交通调整</h4>
+                    <ul class="text-sm text-gray-600 space-y-1">
+                        <li>• 地铁口：+10%~20%</li>
+                        <li>• 公交便利：+3%~10%</li>
+                        <li>• 交通一般：0%</li>
+                        <li>• 交通不便：-5%~-15%</li>
+                    </ul>
+                </div>
+                <div class="border border-gray-100 rounded-lg p-4">
+                    <h4 class="font-medium text-gray-800 mb-2">户型/楼层/装修</h4>
+                    <ul class="text-sm text-gray-600 space-y-1">
+                        <li>• 优质户型：+5%~15%</li>
+                        <li>• 好楼层：+3%~10%</li>
+                        <li>• 精装修：+5%~15%</li>
+                        <li>• 差户型/楼层：-5%~-15%</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- 页脚 -->
+    <footer class="bg-white border-t border-gray-200 py-6">
+        <div class="container mx-auto px-4 text-center text-gray-500 text-sm">
+            <p>二手房价格评估工具 © 2023</p>
+            <p class="mt-1">本工具仅供参考，实际交易价格请以市场为准</p>
+        </div>
+    </footer>
+
+    <!-- 帮助模态框 -->
+    <div id="help-modal" class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center hidden">
+        <div class="bg-white rounded-xl max-w-lg w-full mx-4 p-6 shadow-xl transform transition-all">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xl font-semibold text-gray-800">使用帮助</h3>
+                <button id="close-help" class="text-gray-500 hover:text-gray-700">
+                    <i class="fa fa-times"></i>
+                </button>
+            </div>
+            <div class="space-y-4 text-gray-600">
+                <div>
+                    <h4 class="font-medium text-gray-800 mb-1">如何添加房源？</h4>
+                    <p>点击"添加房源"按钮，表格会新增一行，您可以填写该房源的各项信息。</p>
+                </div>
+                <div>
+                    <h4 class="font-medium text-gray-800 mb-1">如何计算价格调整？</h4>
+                    <p>根据房源实际情况，参考右侧的价格调整指南，填写各项因素的调整金额（万元）。正值表示加价，负值表示减价。</p>
+                </div>
+                <div>
+                    <h4 class="font-medium text-gray-800 mb-1">得房率如何计算？</h4>
+                    <p>系统会自动计算：得房率 = 套内面积 ÷ 建筑面积 × 100%，填写建筑面积和套内面积后会自动显示。</p>
+                </div>
+                <div>
+                    <h4 class="font-medium text-gray-800 mb-1">预估总价如何计算？</h4>
+                    <p>系统会自动计算：预估总价 = 报价 + 各项因素价格调整之和。</p>
+                </div>
+                <div>
+                    <h4 class="font-medium text-gray-800 mb-1">如何删除房源？</h4>
+                    <p>点击每行最后一列的删除按钮（×），即可删除该房源信息。</p>
+                </div>
+            </div>
+            <div class="mt-6">
+                <button id="got-it"
+                    class="w-full bg-primary hover:bg-primary/90 text-white py-2 rounded-lg transition-custom">
+                    明白了
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 初始化图表
+        let priceChart, adjustmentsChart;
+
+        function initCharts() {
+            // 总价对比图表
+            const priceCtx = document.getElementById('price-comparison-chart').getContext('2d');
+            priceChart = new Chart(priceCtx, {
+                type: 'bar',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        label: '预估总价（万元）',
+                        data: [],
+                        backgroundColor: 'rgba(22, 93, 255, 0.7)',
+                        borderColor: 'rgba(22, 93, 255, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: '价格（万元）'
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    }
+                }
+            });
+
+            // 价格调整分析图表
+            const adjustmentsCtx = document.getElementById('adjustments-chart').getContext('2d');
+            adjustmentsChart = new Chart(adjustmentsCtx, {
+                type: 'radar',
+                data: {
+                    labels: ['地段', '学区', '商圈', '房龄', '交通', '户型', '楼层', '装修'],
+                    datasets: []
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        r: {
+                            angleLines: {
+                                display: true
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // 更新图表数据
+        function updateCharts() {
+            const rows = document.querySelectorAll('#houses-table-body tr');
+            const labels = [];
+            const prices = [];
+            const datasets = [];
+
+            const colors = [
+                'rgba(22, 93, 255, 0.7)',
+                'rgba(54, 207, 201, 0.7)',
+                'rgba(114, 46, 209, 0.7)',
+                'rgba(250, 173, 20, 0.7)',
+                'rgba(82, 196, 26, 0.7)',
+                'rgba(255, 77, 79, 0.7)'
+            ];
+
+            rows.forEach((row, index) => {
+                const nameInput = row.querySelector('input[type="text"]');
+                const name = nameInput.value || `房源 ${index + 1}`;
+                const totalPrice = row.querySelector('.total-price').textContent;
+
+                labels.push(name);
+                prices.push(parseFloat(totalPrice) || 0);
+
+                // 收集调整数据
+                const adjustments = [];
+                row.querySelectorAll('.adjustment地段, .adjustment学区, .adjustment商圈, .adjustment房龄, .adjustment交通, .adjustment户型, .adjustment楼层, .adjustment装修').forEach(input => {
+                    adjustments.push(parseFloat(input.value) || 0);
+                });
+
+                // 添加到雷达图数据集
+                datasets.push({
+                    label: name,
+                    data: adjustments,
+                    backgroundColor: colors[index % colors.length],
+                    borderColor: colors[index % colors.length].replace('0.7', '1'),
+                    borderWidth: 1,
+                    pointBackgroundColor: colors[index % colors.length].replace('0.7', '1')
+                });
+            });
+
+            // 更新总价对比图表
+            priceChart.data.labels = labels;
+            priceChart.data.datasets[0].data = prices;
+            priceChart.update();
+
+            // 更新价格调整分析图表
+            adjustmentsChart.data.datasets = datasets;
+            adjustmentsChart.update();
+        }
+
+        // 计算得房率
+        function calculateRate(row) {
+            const buildingAreaInput = row.querySelector('.building-area');
+            const insideAreaInput = row.querySelector('.inside-area');
+            const rateEl = row.querySelector('.rate');
+
+            const buildingArea = parseFloat(buildingAreaInput.value) || 0;
+            const insideArea = parseFloat(insideAreaInput.value) || 0;
+
+            if (buildingArea > 0 && insideArea > 0) {
+                const rate = (insideArea / buildingArea) * 100;
+                rateEl.textContent = rate.toFixed(1) + '%';
+            } else {
+                rateEl.textContent = '-';
+            }
+        }
+
+        // 计算单套房的总价
+        function calculateTotal(row) {
+            // 先计算得房率
+            calculateRate(row);
+
+            const basePriceInput = row.querySelector('.base-price');
+            const basePrice = parseFloat(basePriceInput.value) || 0;
+
+            let totalAdjustment = 0;
+            row.querySelectorAll('[class^="adjustment"]').forEach(input => {
+                totalAdjustment += parseFloat(input.value) || 0;
+            });
+
+            const total = basePrice + totalAdjustment;
+            const totalPriceEl = row.querySelector('.total-price');
+
+            // 只有当总价为NaN或基准价和调整项都为0时才显示'-'
+            if (isNaN(total) || (basePrice === 0 && totalAdjustment === 0)) {
+                totalPriceEl.textContent = '-';
+            } else {
+                totalPriceEl.textContent = total.toFixed(1);
+            }
+
+            return total;
+        }
+
+        // 计算所有房的总价并更新序号
+        function calculateAll() {
+            const rows = document.querySelectorAll('#houses-table-body tr');
+
+            rows.forEach((row, index) => {
+                // 更新序号
+                row.querySelector('.house-index').textContent = index + 1;
+                // 计算总价和得房率
+                calculateTotal(row);
+            });
+
+            // 更新图表
+            updateCharts();
+        }
+
+        // 添加新房源
+        function addHouse() {
+            const tableBody = document.getElementById('houses-table-body');
+            const lastRow = tableBody.lastElementChild;
+            const newRow = lastRow.cloneNode(true);
+
+            // 清空输入值
+            newRow.querySelectorAll('input').forEach(input => {
+                input.value = '';
+            });
+
+            // 重置总价和得房率显示
+            newRow.querySelector('.total-price').textContent = '-';
+            newRow.querySelector('.rate').textContent = '-';
+
+            // 添加删除事件监听
+            newRow.querySelector('.delete-house').addEventListener('click', function () {
+                if (tableBody.children.length > 1) {
+                    newRow.remove();
+                    calculateAll();
+                } else {
+                    // 至少保留一行，清空输入
+                    newRow.querySelectorAll('input').forEach(input => {
+                        input.value = '';
+                    });
+                    newRow.querySelector('.total-price').textContent = '-';
+                    newRow.querySelector('.rate').textContent = '-';
+                    calculateAll();
+                }
+            });
+
+            // 添加输入事件监听
+            newRow.querySelectorAll('input').forEach(input => {
+                input.addEventListener('input', calculateAll);
+            });
+
+            tableBody.appendChild(newRow);
+            calculateAll();
+
+            // 滚动到新行
+            newRow.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+            // 聚焦到新行的名称输入框
+            setTimeout(() => {
+                newRow.querySelector('input[type="text"]').focus();
+            }, 100);
+        }
+
+        // 清空所有房源
+        function clearAll() {
+            if (confirm('确定要清空所有房源信息吗？')) {
+                const tableBody = document.getElementById('houses-table-body');
+                // 保留一行并清空
+                while (tableBody.children.length > 1) {
+                    tableBody.removeChild(tableBody.lastElementChild);
+                }
+                const firstRow = tableBody.firstElementChild;
+                firstRow.querySelectorAll('input').forEach(input => {
+                    input.value = '';
+                });
+                firstRow.querySelector('.total-price').textContent = '-';
+                firstRow.querySelector('.rate').textContent = '-';
+                calculateAll();
+            }
+        }
+
+        // 初始化事件监听
+        function initEventListeners() {
+            // 添加房源按钮
+            document.getElementById('add-house').addEventListener('click', addHouse);
+
+            // 清空按钮
+            document.getElementById('clear-all').addEventListener('click', clearAll);
+
+            // 帮助按钮和模态框
+            const helpBtn = document.getElementById('help-btn');
+            const helpModal = document.getElementById('help-modal');
+            const closeHelp = document.getElementById('close-help');
+            const gotIt = document.getElementById('got-it');
+
+            helpBtn.addEventListener('click', () => {
+                helpModal.classList.remove('hidden');
+                document.body.style.overflow = 'hidden';
+            });
+
+            const closeHelpModal = () => {
+                helpModal.classList.add('hidden');
+                document.body.style.overflow = '';
+            };
+
+            closeHelp.addEventListener('click', closeHelpModal);
+            gotIt.addEventListener('click', closeHelpModal);
+
+            // 点击模态框外部关闭
+            helpModal.addEventListener('click', (e) => {
+                if (e.target === helpModal) {
+                    closeHelpModal();
+                }
+            });
+
+            // 初始行的输入事件
+            document.querySelectorAll('input').forEach(input => {
+                input.addEventListener('input', calculateAll);
+            });
+
+            // 初始行的删除事件
+            document.querySelector('.delete-house').addEventListener('click', function () {
+                const tableBody = document.getElementById('houses-table-body');
+                if (tableBody.children.length > 1) {
+                    this.closest('tr').remove();
+                    calculateAll();
+                } else {
+                    // 至少保留一行，清空输入
+                    this.closest('tr').querySelectorAll('input').forEach(input => {
+                        input.value = '';
+                    });
+                    this.closest('tr').querySelector('.total-price').textContent = '-';
+                    this.closest('tr').querySelector('.rate').textContent = '-';
+                    calculateAll();
+                }
+            });
+
+            // 滚动时导航栏效果
+            window.addEventListener('scroll', () => {
+                const header = document.querySelector('header');
+                if (window.scrollY > 10) {
+                    header.classList.add('py-2', 'shadow');
+                    header.classList.remove('py-4', 'shadow-sm');
+                } else {
+                    header.classList.add('py-4', 'shadow-sm');
+                    header.classList.remove('py-2', 'shadow');
+                }
+            });
+        }
+
+        // 页面加载完成后初始化
+        document.addEventListener('DOMContentLoaded', () => {
+            initEventListeners();
+            initCharts();
+        });
+    </script>
+
+
+</body>
+
+</html>
