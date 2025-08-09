@@ -72,31 +72,29 @@
 
     <!-- 主内容区 -->
     <main class="container mx-auto px-4 py-8">
-        <!-- 介绍卡片 -->
-        <div class="bg-white rounded-xl shadow-soft p-6 mb-8 hover-lift">
-            <h2 class="text-xl font-semibold mb-3 text-primary flex items-center">
-                <i class="fa fa-info-circle mr-2"></i>工具说明
-            </h2>
-            <p class="text-gray-600 mb-4">
-                该工具帮助您比较多个二手房源，通过对不同维度的价格调整，计算出合理的预估总价。
-                请填写房源的基础报价和各项因素的价格调整（正值为加价，负值为减价）。
-            </p>
-            <div class="grid md:grid-cols-3 gap-4 text-sm text-gray-600">
-                <div class="flex items-start">
-                    <i class="fa fa-plus-circle text-success mt-1 mr-2"></i>
-                    <span>正值表示该因素优于市场平均水平，应加价</span>
+        <!-- 数据可视化区域 -->
+        <div class="grid md:grid-cols-2 gap-6 mb-8">
+            <!-- 总价对比图表 -->
+            <div class="bg-white rounded-xl shadow-soft p-6 hover-lift">
+                <h3 class="text-lg font-semibold mb-4 text-gray-700 flex items-center">
+                    <i class="fa fa-bar-chart text-primary mr-2"></i>房源总价对比
+                </h3>
+                <div class="h-64">
+                    <canvas id="price-comparison-chart"></canvas>
                 </div>
-                <div class="flex items-start">
-                    <i class="fa fa-minus-circle text-danger mt-1 mr-2"></i>
-                    <span>负值表示该因素劣于市场平均水平，应减价</span>
-                </div>
-                <div class="flex items-start">
-                    <i class="fa fa-calculator text-primary mt-1 mr-2"></i>
-                    <span>预估总价 = 报价 + 各项因素价格调整之和</span>
+            </div>
+
+            <!-- 价格调整分析 -->
+            <div class="bg-white rounded-xl shadow-soft p-6 hover-lift">
+                <h3 class="text-lg font-semibold mb-4 text-gray-700 flex items-center">
+                    <i class="fa fa-pie-chart text-primary mr-2"></i>价格调整分析
+                </h3>
+                <div class="h-64">
+                    <canvas id="adjustments-chart"></canvas>
                 </div>
             </div>
         </div>
-
+        
         <!-- 控制面板 -->
         <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
             <div class="text-lg font-semibold text-gray-700">房源对比列表</div>
@@ -201,29 +199,6 @@
             </div>
         </div>
 
-        <!-- 数据可视化区域 -->
-        <div class="grid md:grid-cols-2 gap-6 mb-8">
-            <!-- 总价对比图表 -->
-            <div class="bg-white rounded-xl shadow-soft p-6 hover-lift">
-                <h3 class="text-lg font-semibold mb-4 text-gray-700 flex items-center">
-                    <i class="fa fa-bar-chart text-primary mr-2"></i>房源总价对比
-                </h3>
-                <div class="h-64">
-                    <canvas id="price-comparison-chart"></canvas>
-                </div>
-            </div>
-
-            <!-- 价格调整分析 -->
-            <div class="bg-white rounded-xl shadow-soft p-6 hover-lift">
-                <h3 class="text-lg font-semibold mb-4 text-gray-700 flex items-center">
-                    <i class="fa fa-pie-chart text-primary mr-2"></i>价格调整分析
-                </h3>
-                <div class="h-64">
-                    <canvas id="adjustments-chart"></canvas>
-                </div>
-            </div>
-        </div>
-
         <!-- 评估指南 -->
         <div class="bg-white rounded-xl shadow-soft p-6 hover-lift">
             <h3 class="text-lg font-semibold mb-4 text-gray-700 flex items-center">
@@ -290,7 +265,7 @@
     <!-- 页脚 -->
     <footer class="bg-white border-t border-gray-200 py-6">
         <div class="container mx-auto px-4 text-center text-gray-500 text-sm">
-            <p>二手房价格评估工具 © 2023</p>
+            <p>二手房价格评估工具 © 2025</p>
             <p class="mt-1">本工具仅供参考，实际交易价格请以市场为准</p>
         </div>
     </footer>
